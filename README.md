@@ -1,4 +1,4 @@
-# PHP HOT RELOAD FEATURE  
+# PHP HOT RELOAD  
 This single file add the hot reload feature to php projects  
 
 This file is divided in two parts, the php and javascript part. In the
