@@ -22,7 +22,9 @@
   $ROOT = "./";
 
   $watch = [
-    "some_folder"
+    "my_folder_1",
+    "my_folder_2",
+    "my_folder_3",
   ];
   
   
