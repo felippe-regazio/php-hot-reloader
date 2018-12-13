@@ -93,6 +93,7 @@
 
 <script>
 /*
+
   Live.js - One script closer to Designing in the Browser
   Written for Handcraft.com by Martin Kool (@mrtnkl).
 
@@ -114,7 +115,9 @@
   as a page reload due to a change in html or css would not re-include the bookmarklet.
   To monitor CSS and be notified that it has loaded, include it as: live.js#css,notify
 
-  WARNING -- THIS SCRIPT IS WAS MODIFIED FROM ITS ORIGINAL VERSION TO HOLD WG NEEDINGS
+  WARNING -- THIS SCRIPT IS WAS MODIFIED FROM ITS ORIGINAL VERSION TO HOLD PHP NEEDINGS
+  ADDED A KEY "php" IN ACTIVE ARRAY. THE PHP USES THE ETAG HEADER KEY TO SEE PHP CHANGES
+
 */
 (function () {
 
