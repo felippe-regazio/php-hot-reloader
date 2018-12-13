@@ -22,11 +22,7 @@
   $ROOT = "./";
 
   $watch = [
-    "src",
-    "vendor",
-    "config",
-    "plugins",
-    "webroot"
+    "some_folder"
   ];
   
   
