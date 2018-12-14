@@ -85,10 +85,10 @@
   $hashes = [];
 
   foreach($watch as $dir){
-    $timestamps[] = hashDirectory(WATCH_ROOT.DS.$dir);
+    $hashes[] = hashDirectory(WATCH_ROOT.DS.$dir);
   }
 
-  header("Etag: " . implode("",$timestamps) );
+  header("Etag: " . sha1(implode("",$hashes)) );
 ?>
 
 <script>
