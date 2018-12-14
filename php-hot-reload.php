@@ -1,22 +1,34 @@
 <?php
 /*
-### ABOUT THIS FILE
+# ABOUT THE PHP HOT RELOAD USAGE 
 
 This single file adds the hot reload feature to php projects. Please configure the variables on the script. 
-After properly configured, this file must be added on the <header> of the pages you want to hot reload.
+After properly configured, this file must be added on the \<header> of the pages you want to hot reload.
 
-### PHP HOT RELOAD CONFIGURATION
+# GETTING STARTED
+
+Configure your $ROOT and your $watch List on vars in this script. Add this script on the php
+files you want to hot reload. You must call this file in your \<head> to a better effect.
+
+# PHP HOT RELOAD CONFIGURATION
+
+Please, open the php file and configure the following vars:
 
 $ROOT  = Your $watch dir root folders
 $watch = Folders that will trigger a page reload when content changes // relative to $ROOT
 You dont need ad subfolders of your watch folders. But your folders on $watch must be subfolders of $ROOT.
 
-### GETTING STARTED
+Example:
 
-Configure your $ROOT and your $watch List on vars in this script. Add this script on the php
-files you want to hot reload. You must call this file in your <head> to a better effect.
+$ROOT  = "root_folder";
+$watch = [
+  "folder_a",
+  "folder_b"
+]; 
 
-### THE VARIABLE $MODE
+The script will assist root_folder/folder_a and root_folder/folder_b.
+
+# THE VARIABLE $MODE
 
 The $MODE can be 'md5' or 'mtime'. There are a few differences between them. In 'md5' mode,
 the script will make a md5 hash of every entire directory configured to $watch, is exapansive,
@@ -27,7 +39,7 @@ configured in $watch. If some modification time has changed, the script will tri
 have a core difference to the first method. In this method you will get a page refresh everytime you
 save a file (timestamp changes), in the first method you will get a refresh only if a file really changes.
 
-### HOW IT WORKS
+# HOW IT WORKS
 
 This script is divided in two parts. The PHP part and the JAVASCRIPT part. The Javascript uses the
 live.js reload script (http://livejs.com/), with a few modifications. So, how it works? Well, when
@@ -37,7 +49,7 @@ changes every 1 second. The javascript assists changes on html, css, scss, php, 
 the headers for new informations. So, when you change a file, or change the etag checksum, the script
 will trigger an automatic reload on the page.
 
-### ABOUT LIVE.JS
+# ABOUT LIVE.JS
 
 Live.js - One script closer to Designing in the Browser
 Written for Handcraft.com by Martin Kool (@mrtnkl).
@@ -61,13 +73,13 @@ as a page reload due to a change in html or css would not re-include the bookmar
 To monitor CSS and be notified that it has loaded, include it as: live.js#css,notify
 */
 
-$ROOT = ROOT;
+$ROOT = "your_root_folder";
 $MODE = "mtime";
 
 $watch = [
-  "src",
-  "plugins",
-  "webroot"
+  "folder_example_1",
+  "folder_example_2",
+  "folder_example_3"
 ];
 
 // END CONFIG --------------------------------------------------------------------------
