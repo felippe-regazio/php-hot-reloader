@@ -82,13 +82,14 @@
     return md5(implode('', $files));
   }
 
-  $hashes = [];
+  /* create a hash and send on header etag as sha1 */
 
+  $hashes = [];
   foreach($watch as $dir){
     $hashes[] = hashDirectory(WATCH_ROOT.DS.$dir);
   }
-
   header("Etag: " . sha1(implode("",$hashes)) );
+
 ?>
 
 <script>
