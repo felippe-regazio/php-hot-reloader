@@ -1,7 +1,9 @@
 # ABOUT THE PHP HOT RELOAD USAGE 
 
-This single file adds the hot reload feature to php projects. Please configure the variables on the script. 
-After properly configured, this file must be added on the \<header> of the pages you want to hot reload.
+This single file (php_hot_reload) adds the hot reload feature to php projects. Please configure the variables on the script. 
+After properly configured, the file must be added on the \<header> of the pages you want to hot reload.
+
+NICE TIP: Maybe You prefer to add the php_hot_reload_mini.php insted the original one in your \<header> ^^
 
 # GETTING STARTED
 
