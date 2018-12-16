@@ -29,7 +29,7 @@ Class HotReloader {
 
   public function setWatchMode( String $mode){
     $this->WATCHMODE = $mode;
-  }    
+  }
 
   public function setWatchDirs( Array $dirs ){
     $this->WATCHDIRS = $dirs;
