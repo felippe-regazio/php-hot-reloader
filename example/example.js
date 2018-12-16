@@ -1,0 +1,1 @@
+console.log("Im an example. Change this message with the the example index opened in a browser, and check your console while making changes here");

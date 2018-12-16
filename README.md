@@ -1,3 +1,19 @@
+# PHP HOT RELOADER
+
+This is a tiny class which adds the live reload feature to any php project. Its just a php hash of all included files on your code script and a live.js script with a few modifications. When the hash or any of your assets has changed, the page will automatically reload.
+
+# USAGE
+
+This class accepts a few options, but the simplier and faster way to use it is require the class file (or add the class in your project somehow); then add the following code before your \</html> tag:
+
+```php
+<?php
+	require "../hotreloader.php";
+	@$reloader = new HotReloader();
+	@$reloader->init();
+?>
+```
+
 # ABOUT THE PHP HOT RELOAD USAGE 
 
 This single file (php_hot_reload) adds the hot reload feature to php projects. Please configure the variables on the script. 

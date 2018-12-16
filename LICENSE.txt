@@ -1,4 +1,4 @@
-PHP HOT RELOAD LICENSE
+PHP HOT RELOADER LICENSE
 
 MIT License http://en.wikipedia.org/wiki/MIT_License  
 IN SHORT: It's free. You can use it commercially. Don't sue us.
