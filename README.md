@@ -8,9 +8,9 @@ This class accepts a few options, but the simplier and faster way to use it is r
 
 ```php
 <?php
-	require "../hotreloader.php";
-	@$reloader = new HotReloader();
-	@$reloader->init();
+require "../hotreloader.php";
+@$reloader = new HotReloader();
+@$reloader->init();
 ?>
 ```
 
