@@ -12,7 +12,7 @@ require "../hotreloader.php";
 @$reloader->init();
 ```
 
-Some notes: remember to add the code BEFORE your \</html>. Note that is your CLOSING script tag. If you add any include or require after the reloader->init, it wont be watched. The assets like js and css files are watched by live.js wrapped on this class.
+Some notes: remember to add the code BEFORE your \</html>. Note that is your CLOSING script tag. If you add any include or require after the reloader->init, it wont be watched. The assets like js and css files are watched by live.js wrapped on this class. Of course, the require path must be changed to your proper path.
 
 # HOW IT WORKS
 
