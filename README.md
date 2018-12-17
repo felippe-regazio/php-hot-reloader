@@ -7,11 +7,9 @@ This is a tiny class which adds the live reload feature to any php project. Its 
 This class accepts a few options, but the simplier and faster way to use it is require the class file (or add the class in your project somehow); then add the following code before your \</html> tag:
 
 ```php
-<?php
-	require "../hotreloader.php";
-	@$reloader = new HotReloader();
-	@$reloader->init();
-?>
+require "../hotreloader.php";
+@$reloader = new HotReloader();
+@$reloader->init();
 ```
 
 Some notes: remember to add the code BEFORE your \</html>. Note that is your CLOSING script tag. If you add any include or require after the reloader->init, it wont be watched. The assets like js and css files are watched by live.js wrapped on this class.
@@ -55,15 +53,13 @@ You only need to set this options when using setWatchDirs(). Here will define yo
 Use the getConfig method to check the current configuration of your reloader.
 
 ```php
-<?php
-	// in this example we start the reloader with some overrided options
-	require "../hotreloader.php";
-	$reloader = new HotReloader();
-	$reloader->setDiffMode('md5');
-	$reloader->setWatchMode('dirs');
-	$reloader->init();	
-	// now we are watching the entire current dir and md5 hashing it to check for diffs
-?>
+// in this example we start the reloader with some overrided options
+require "../hotreloader.php";
+$reloader = new HotReloader();
+$reloader->setDiffMode('md5');
+$reloader->setWatchMode('dirs');
+$reloader->init();	
+// now we are watching the entire current dir and md5 hashing it to check for diffs
 ```
 
 # THE set() METHOD
@@ -71,14 +67,12 @@ Use the getConfig method to check the current configuration of your reloader.
 The set() method is a shorthand to all the reloader setters. You can pass a set of options in an array, the usage must be:
 
 ```php
-<?php
-	$reloader->set([
-		'DIFFMODE'  => "mtime", // mtime or md5
-	    'WATCHMODE' => "auto",  // auto or dirs
-	    'WATCHDIRS' => [""],    // the directories to watch
-	    'ROOT'      => __DIR__  // the root of those directories	
-	]);
-?>
+$reloader->set([
+	'DIFFMODE'  => "mtime", // mtime or md5
+    'WATCHMODE' => "auto",  // auto or dirs
+    'WATCHDIRS' => [""],    // the directories to watch
+    'ROOT'      => __DIR__  // the root of those directories	
+]);
 ```
 
 # LIVE.JS
