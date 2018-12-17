@@ -14,5 +14,6 @@
 	require "../hotreloader.php";
 	@$reloader = new HotReloader();
 	@$reloader->init();
+  print_r(get_included_files());
 ?>
 </html>

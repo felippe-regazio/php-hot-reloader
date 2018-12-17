@@ -48,9 +48,9 @@ $root must be the path which contains all dirs being watched;
 
 You only need to set this options when using setWatchDirs(). Here will define your root path, and all the directories passed to setWatchDirs must be relative to this root. By default the $root is the __DIR__ php const.
 
-- getConfig();
+- currentConfig();
 
-Use the getConfig method to check the current configuration of your reloader.
+Use the currentConfig method to check the current configuration of your reloader.
 
 ```php
 // in this example we start the reloader with some overrided options

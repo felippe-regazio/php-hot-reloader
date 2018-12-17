@@ -17,6 +17,7 @@ Class HotReloader {
 
   function __construct() {
     $this->DIFFMODE  = "mtime"; // mtime or md5
+    $this->IGNORE    = [""];
     $this->WATCHMODE = "auto";  // auto or dirs
     $this->WATCHDIRS = [""];    // the directories to watch
     $this->ROOT      = __DIR__; // the root of those directories
@@ -50,7 +51,7 @@ Class HotReloader {
 
   // getters
 
-  public function getConfig(){
+  public function currentConfig(){
     return [
       "ROOT"      => $this->ROOT,
       "DIFFMODE"  => $this->DIFFMODE,
@@ -104,7 +105,6 @@ Class HotReloader {
   // script knows that something has changed and will trigger an automatic reload
   private function createStateHash($mode){
     $hashes = [];
-    //
     if( $this->WATCHMODE == "auto" ){
       // if watchmode = auto, we will hash only include files related to the
       // current file, this options is lighter than the 'dir' option for ex
