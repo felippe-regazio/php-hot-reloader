@@ -102,7 +102,7 @@ Class HotReloader {
   // this generated hash will be sended in the doc headers as a unique fingerprint
   // the live.js will be watching the headers, if this fingerprint changes, the
   // script knows that something has changed and will trigger an automatic reload
-  private function createStateHash(){
+  private function createStateHash($mode){
     $hashes = [];
     //
     if( $this->WATCHMODE == "auto" ){
@@ -126,7 +126,7 @@ Class HotReloader {
   // this hash will be a fingerprint of your script related files state. then
   // this funciton will set this hash as an etag on the current script headers
   function addEtagOnHeader(){
-      $hash = $this->createStateHash();
+      $hash = $this->createStateHash($this->DIFFMODE);
       if( $hash ) header( "Etag: " . $hash ); return true;
       echo "HotReloader: Failed to generate Etag Hash";
   }
