@@ -68,7 +68,7 @@ The set() method is a shorthand to all the reloader setters. You can pass a set 
 
 ```php
 $reloader->set([
-	'DIFFMODE'  => "mtime", // mtime or md5
+'DIFFMODE'  => "mtime", // mtime or md5
     'WATCHMODE' => "auto",  // auto or dirs
     'WATCHDIRS' => [""],    // the directories to watch
     'ROOT'      => __DIR__  // the root of those directories	
