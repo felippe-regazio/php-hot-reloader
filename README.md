@@ -34,7 +34,7 @@ You only need to set this options when using setWatchDirs() or to set a Root pat
 
 Use this method to unwatch a folder, a file, or a src/link paths. no matter if you're in auto mode (watching only include files and assets) or wathing an entire directory. The files and directories (and its entire content) setted with ignore() will be ignored by hot reloader.
 
-The hot reloader will ignore all folders and files setted in the ignore when generating the application hash from server side. To ignore front side src/links/paths etc, please include the element src or link on the ignore. 
+The hot reloader will ignore all folders and files setted in the ignore when generating the application hash from server side. To ignore front side src/links/paths etc, please include the element src or link on the ignore. So, its a simple rule: to ignore php files, use relative or absolute paths, to ignore assets and front end matters, use src/link path.
 
 ```php
 require "../hotreloader.php";

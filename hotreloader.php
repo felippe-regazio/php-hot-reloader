@@ -17,7 +17,7 @@ Class HotReloader {
 
   function __construct() {
     $this->DIFFMODE  = "mtime"; // mtime or md5
-    $this->IGNORE    = [""];
+    $this->IGNORE    = [""];    // file/folders to ignore
     $this->WATCHMODE = "auto";  // auto or dirs
     $this->WATCHDIRS = [""];    // the directories to watch
     $this->ROOT      = __DIR__; // the root of those directories
