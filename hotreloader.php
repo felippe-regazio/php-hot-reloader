@@ -171,6 +171,9 @@ Class HotReloader {
     ob_start(); ?>
       <script>
       (function () {
+        // get the ignore list from php
+        var ignoreList = [<?php foreach($this->IGNORE as $key){ echo "'$key',"; } ?>];
+        // script only (live.js)        
         var headers = { "Etag": 1, "Last-Modified": 1, "Content-Length": 1, "Content-Type": 1 },
             resources = {},
             pendingRequests = {},
@@ -225,10 +228,12 @@ Class HotReloader {
             }
             // initialize the resources info
             for (var i = 0; i < uris.length; i++) {
-              var url = uris[i];
-              Live.getHead(url, function (url, info) {
-                resources[url] = info;
-              });
+              if(!ignoreList.includes(uris[i])){
+                var url = uris[i];
+                Live.getHead(url, function (url, info) {
+                  resources[url] = info;
+                });
+              }
             }
             // yep
             loaded = true;

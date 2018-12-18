@@ -32,22 +32,25 @@ You only need to set this options when using setWatchDirs() or to set a Root pat
 
 # THE ignore() METHOD
 
-Use this method to unwatch a folder or a file, no matter if you're in auto mode (watching only include files and assets) or wathing an entire directory. The files and directories (and its entire content) setted with ignore() will be ignored by hot reloader.
+Use this method to unwatch a folder, a file, or a src/link paths. no matter if you're in auto mode (watching only include files and assets) or wathing an entire directory. The files and directories (and its entire content) setted with ignore() will be ignored by hot reloader.
+
+The hot reloader will ignore all folders and files setted in the ignore when generating the application hash from server side. To ignore front side src/links/paths etc, please include the element src or link on the ignore. 
 
 ```php
 require "../hotreloader.php";
 $reloader = new HotReloader();
 $reloader->ignore([
-	"project/path/to/first/directory",
-	"project/path/to/another/directory",
-	"project/path/to/custom/directory/file.php"
+  "/src/assets/myscript.js",
+  "project/path/to/first/directory",
+  "project/path/to/another/directory",
+  "project/path/to/custom/directory/file.php",
 ]);
 $reloader->init();
 ```
 
 Obs: By default, you must add absolute paths on ignore() in case you had not setted the ROOT option (see setRoot method). In case it was setted, the paths must be relative to the ROOT. The ignore() method is very useful if you're script include some files which changes dinamically (causing refresh loops) or if you just dont need to watch them, increasing the speed of the process and keep a clean process
 
-Obs: Css and js files included in your page using tags cant be ignored.
+Obs: If you added a folder on the ignore list, and this folder serve a js file (for example) in your page via \<script> tag, you must add the src of its js on the \ignore() array. This happens because most of the times, the src and link paths are different on front end from the back end.
 
 # GENERAL METHODS
 

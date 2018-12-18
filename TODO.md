@@ -5,3 +5,4 @@
 # Create a Include method to add folders of files to be watched beside the current ones or mode
 # Do a nice output to currentConfig
 # A way to see the a log of file changes
+# Review the "local changes in js triggers a page reload". Turns it optional?
