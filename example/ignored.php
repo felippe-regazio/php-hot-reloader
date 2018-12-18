@@ -1,0 +1,2 @@
+<!--  This file is on the includes, but was setted to be ignored, so if you change something on here, this will not trigger a page reload. The ignore() method is very useful if you're script include some files which changes dinamically (causing refresh loops) or if you just dont need to watch them, increasing the speed of the process and keep a clean process -->
+:)

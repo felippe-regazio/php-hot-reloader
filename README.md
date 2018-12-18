@@ -20,7 +20,34 @@ This script is divided in two parts. The PHP part and the JAVASCRIPT part. The J
 
 By default, the class only assists the included files and its assets waiting for changes, and the hash of this contents and its  assets is created using an md5 of all related files timestamps. Its possible to change this behavior, and the class default behavior with a few options.
 
-# OPTIONS
+# THE setRoot() METHOD
+
+- setRoot( String $root );
+
+$root must be the path which contains all dirs setted to watch (see setWatchDirs());
+
+This will define the root path to the watcher. If you didnt used a setRoot() method to define your project root, the paths will be relative to where the hotreloader.php is. A good tip is to use the setRoot as setRoot(__DIR__), so your paths will be always relative to your current file.
+
+You only need to set this options when using setWatchDirs() or to set a Root path to ignore() files and folders. When setted, all the directories passed to setWatchDirs or ignore() must be relative to this root. Use an absolute path as $root. By default the $root is the __DIR__ php const.
+
+# THE ignore() METHOD
+
+Use this method to unwatch a folder or a file, no matter if you're in auto mode (watching only include files and assets) or wathing an entire directory. The files and directories (and its entire content) setted with ignore() will be ignored by hot reloader.
+
+```php
+require "../hotreloader.php";
+$reloader = new HotReloader();
+$reloader->ignore([
+	"project/path/to/first/directory",
+	"project/path/to/another/directory",
+	"project/path/to/custom/directory/file.php"
+]);
+$reloader->init();
+```
+
+Obs: By default, you must add absolute paths on ignore() in case you had not setted the ROOT option (see setRoot method). In case it was setted, the paths must be relative to the ROOT. The ignore() method is very useful if you're script include some files which changes dinamically (causing refresh loops) or if you just dont need to watch them, increasing the speed of the process and keep a clean process
+
+# GENERAL METHODS
 
 There are a few methods to get and set the reloader behavior:
 
@@ -42,27 +69,23 @@ $dirs must be an array of directories paths
 
 This method must be only used when using "dirs" as watch mode. The setWatchDirs method tells the reloader which directories watch. If you dont set the directories to the watcher, your file current directory will be used. All the subdirectories will be considered. So, any change in the directory will trigger a page reload.
 
-- setRoot( String $root );
-
-$root must be the path which contains all dirs being watched;
-
-You only need to set this options when using setWatchDirs(). Here will define your root path, and all the directories passed to setWatchDirs must be relative to this root. By default the $root is the __DIR__ php const.
-
 - currentConfig();
 
 Use the currentConfig method to check the current configuration of your reloader.
+
+- Methods Usage Example:
 
 ```php
 // in this example we start the reloader with some overrided options
 require "../hotreloader.php";
 $reloader = new HotReloader();
-$reloader->setDiffMode('md5');
-$reloader->setWatchMode('dirs');
-$reloader->init();	
-// now we are watching the entire current dir and md5 hashing it to check for diffs
+$reloader->setDiffMode('md5'); // hash the changes using md5
+$reloader->setWatchMode('dirs'); // watch the current entire directory
+$reloader->ignore(["/projectfolder/currentdir/file1.php"]); // the reloader will ignore changes in file1.php
+$reloader->init();
 ```
 
-# THE set() METHOD
+# THE set() METHOD SHORTHAND
 
 The set() method is a shorthand to all the reloader setters. You can pass a set of options in an array, the usage must be:
 
@@ -71,6 +94,7 @@ $reloader->set([
     'DIFFMODE'  => "mtime", // mtime or md5
     'WATCHMODE' => "auto",  // auto or dirs
     'WATCHDIRS' => [""],    // the directories to watch
+    'IGNORE' 	=> [""],
     'ROOT'      => __DIR__  // the root of those directories	
 ]);
 ```

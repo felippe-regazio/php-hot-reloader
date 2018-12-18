@@ -6,14 +6,20 @@
 </head>
 <body>
 	<div>
-		<?php require "example.php"; ?>
+		<?php 
+			require "example.php";
+			require "ignored.php"; 
+		?>
 	</div>
 	<script src="example.js" type="text/javascript"></script>
 </body>
 <?php
 	require "../hotreloader.php";
-	@$reloader = new HotReloader();
-	@$reloader->init();
-  print_r(get_included_files());
+	$reloader = new HotReloader();
+	$reloader->setRoot(__DIR__);
+	$reloader->ignore([
+		"ignored.php"
+	]);
+	$reloader->init();
 ?>
 </html>

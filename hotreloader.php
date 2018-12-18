@@ -26,7 +26,7 @@ Class HotReloader {
   // single setters
 
   public function setDiffMode( String $mode){
-    $this->DIFFMODE  = $mode;
+    $this->DIFFMODE = $mode;
   }
 
   public function setWatchMode( String $mode){
@@ -37,9 +37,13 @@ Class HotReloader {
     $this->WATCHDIRS = $dirs;
   }
   
-  public function setRoot( String $root){
-    $this->ROOT  = $root;
+  public function setRoot( String $root ){
+    $this->ROOT = $root;
   }
+
+  public function ignore( Array $array ){
+    $this->IGNORE = $array;
+  }  
 
   // general setter
 
@@ -57,7 +61,8 @@ Class HotReloader {
       "DIFFMODE"  => $this->DIFFMODE,
       "WATCHMODE" => $this->WATCHMODE,
       "WATCHING"  => $this->WATCHDIRS,
-      "STATEHASH" => $this->createEtagHash()
+      "IGNORING"  => $this->IGNORE,
+      "STATEHASH" => $this->createStateHash($this->MODE)
     ];
   }
 
@@ -94,6 +99,27 @@ Class HotReloader {
     return md5(implode('', $files));
   }
 
+  // this function check if a path exists in a given array of paths. the checking
+  // will check if the searched path is a substring of any key in the given array
+  private function willBeIgnored(String $searched){
+    if( !empty(array_filter($this->IGNORE)) ){
+      $array = $this->IGNORE;
+      foreach( $array as $key ){
+        // check if the ROOT was setted
+        if( !empty($this->ROOT) ){
+          $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+          $key = $this->ROOT.$DS.$key;
+        }
+        // check if must ignore
+        if( ($searched == $key) || (strpos($searched, $key) !== false) && (strpos($searched, $key) == 0) ){
+          return true;
+        }
+      }
+    }
+    // everything has failed
+    return false;
+  }
+
   // this funtion usedthe to create an hash based on the current script state
   // if you are running in "auto" mode, the script will check all included files
   // and generate a hash of them using mtime or md5 (depending of your choice).
@@ -109,13 +135,18 @@ Class HotReloader {
       // if watchmode = auto, we will hash only include files related to the
       // current file, this options is lighter than the 'dir' option for ex
       foreach( get_included_files() as $file ){
-        $hashes[] = ($mode == "mtime" ? stat($file)['mtime'] : md5_file($file));;
+        // check if the file is not setted on in a dir setted on ignore list
+        if( !$this->willBeIgnored($file) ){
+          $hashes[] = ($mode == "mtime" ? stat($file)['mtime'] : md5_file($file));
+        }
       }      
     } elseif( $this->WATCHMODE == "dirs" ) {
       // if the watchmode = dir, we will watch the entire directories setted in
       // this watch (if none, the script current dir will be taken) and hashe it
       foreach( $this->WATCHDIRS as $dir ){
-        $hashes[] = $this->hashDirectory($this->ROOT.DIRECTORY_SEPARATOR.$dir, $this->DIFFMODE);
+        if( !$this->willBeIgnored($file) ){
+          $hashes[] = $this->hashDirectory($this->ROOT.DIRECTORY_SEPARATOR.$dir, $this->DIFFMODE);
+        }
       }
     }
     // return the new hash or empty/false
