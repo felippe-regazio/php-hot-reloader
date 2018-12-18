@@ -144,7 +144,7 @@ Class HotReloader {
       // if the watchmode = dir, we will watch the entire directories setted in
       // this watch (if none, the script current dir will be taken) and hashe it
       foreach( $this->WATCHDIRS as $dir ){
-        if( !$this->willBeIgnored($file) ){
+        if( !$this->willBeIgnored($dir) ){
           $hashes[] = $this->hashDirectory($this->ROOT.DIRECTORY_SEPARATOR.$dir, $this->DIFFMODE);
         }
       }
