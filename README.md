@@ -47,6 +47,8 @@ $reloader->init();
 
 Obs: By default, you must add absolute paths on ignore() in case you had not setted the ROOT option (see setRoot method). In case it was setted, the paths must be relative to the ROOT. The ignore() method is very useful if you're script include some files which changes dinamically (causing refresh loops) or if you just dont need to watch them, increasing the speed of the process and keep a clean process
 
+Obs: Css and js files included in your page using tags cant be ignored.
+
 # GENERAL METHODS
 
 There are a few methods to get and set the reloader behavior:
