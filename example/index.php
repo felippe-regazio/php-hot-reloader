@@ -17,14 +17,10 @@
 <?php
 	require "../hotreloader.php";
 	$reloader = new HotReloader();
-	// if dont dont set the root path, 
-	// the hotreloader root will be used
 	$reloader->setRoot(__DIR__);
-	// you can add files or folders here
 	$reloader->ignore([
 		"ignored.php"
 	]);
-	// start the reloader with the given config
 	$reloader->init();
 ?>
 </html>
