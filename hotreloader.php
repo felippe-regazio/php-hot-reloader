@@ -257,6 +257,17 @@ Class HotReloader {
                 var oldInfo = resources[url],
                     hasChanged = false;
                 resources[url] = newInfo;
+                // this little section try to catch errors
+                // from the backend that could break live.js.
+                // if the newInfo key has sended an Etag, 
+                // Last-Modified and Content-Length = null 
+                // And the Content-Type = "text/html", this 
+                // Means a possible back end error on code
+                if( newInfo['Content-Type'] == 'text/html' && newInfo['Etag'] == null && newInfo['Last-Modified'] == null && newInfo['Content-Length'] == null){
+                  console.log("Hot Reloader tracked a possible error on your back end code");
+                  window.location.reload();
+                };
+                // If content exists, and is not totally empty:
                 for (var header in oldInfo) {
                   // do verification based on the header type
                   var oldValue = oldInfo[header],
