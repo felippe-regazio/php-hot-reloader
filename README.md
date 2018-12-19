@@ -2,7 +2,7 @@
 
 This is a tiny class which adds the live reload feature to any php project. It allows you to see your page dinamically changing while you code, without have to keep refreshing page on every change.
 
-This script was written by Felippe Regazio.
+This script is written by Felippe Regazio.
 The javascript part includes live.js script with several modifications.
 
 # USAGE

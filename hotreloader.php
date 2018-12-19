@@ -281,11 +281,13 @@ class HotReloader {
             */
             if(newInfo['Content-Type'] == 'text/html'){
               if(newInfo['Etag'] == null && newInfo['Last-Modified'] == null && newInfo['Content-Length'] == null){
-                if(!phperror) console.error("Hot Reloader tracked a possible error on your back end code");
+                if(!phperror){
+                  console.error("Hot Reloader tracked a possible error on your back end code");                  
+                  Live.getHTML( window.location.href, function (response) {
+                    document.documentElement.innerHTML = response.documentElement.innerHTML;
+                  });
+                }
                 phperror = true;
-                Live.getHTML( window.location.href, function (response) {
-                  document.documentElement.innerHTML = response.documentElement.innerHTML;
-                });                
               }
             }
           },
