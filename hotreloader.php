@@ -207,6 +207,10 @@ Class HotReloader {
             // track local js urls
             for (var i = 0; i < scripts.length; i++) {
               var script = scripts[i], src = script.getAttribute("src");
+              // check if the script folder are not in the ignore list or if
+              // the script hasnt the hidden attribute. if so, ignore the tag
+              if(script.hidden || ignoreList.includes(script.baseURI)) continue;
+              // if the script wasnt ignored
               if (src && isLocal(src))
                 uris.push(src);
               if (src && src.match(/\blive.js#/)) {
@@ -221,13 +225,19 @@ Class HotReloader {
             // track local css urls
             for (var i = 0; i < links.length && active.css; i++) {
               var link = links[i], rel = link.getAttribute("rel"), href = link.getAttribute("href", 2);
-              if (href && rel && rel.match(new RegExp("stylesheet", "i")) && isLocal(href)) {
+              // check if the link(css) folder are not in the ignore list or if
+              // the link tag hasnt the hidden attribute. if so, ignore the tag
+              if(link.hidden || ignoreList.includes(link.baseURI)) continue;
+              // if the link tag wasnt ignored
+              if (href && isLocal(href)) {
                 uris.push(href);
                 currentLinkElements[href] = link;
               }
             }
             // initialize the resources info
             for (var i = 0; i < uris.length; i++) {
+              // check if the script/link src/href are in ignore list
+              // if not finally add the element to resources list
               if(!ignoreList.includes(uris[i])){
                 var url = uris[i];
                 Live.getHead(url, function (url, info) {

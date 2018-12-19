@@ -32,25 +32,35 @@ You only need to set this options when using setWatchDirs() or to set a Root pat
 
 # THE ignore() METHOD
 
-Use this method to unwatch a folder, a file, or a src/link paths. no matter if you're in auto mode (watching only include files and assets) or wathing an entire directory. The files and directories (and its entire content) setted with ignore() will be ignored by hot reloader.
 
-The hot reloader will ignore all folders and files setted in the ignore when generating the application hash from server side. To ignore front side src/links/paths etc, please include the element src or link on the ignore. So, its a simple rule: to ignore php files, use relative or absolute paths, to ignore assets and front end matters, use src/link path.
+
+Use this method to unwatch a folder, a file, or a src/href paths. The hot reloader will ignore all folders and files setted in the ignore. Maybe you can find some diferences in ignoring server side or client side matters.
+
+To ignore front end (src/links added), please include the element src/href on the ignore. This happen cause, due htaccess and other technologies, sometimes the src path is not really the real location path of a style or css file. You can add folders relative to the script/link src/href to ignore all files inside a given path. 
+
+To ignore back end matters, just add the file/folder path to the ignore array. If you didnt set a Root (see setRoot method), you must use absolute paths, otherwise, the paths must be relative to the setted Root. The path setted with setRoot() must be absolute.
+
+Example:
 
 ```php
 require "../hotreloader.php";
 $reloader = new HotReloader();
+$reloader->setRoot(__DIR__);
 $reloader->ignore([
-  "/src/assets/myscript.js",
-  "project/path/to/first/directory",
-  "project/path/to/another/directory",
   "project/path/to/custom/directory/file.php",
+  "project/path/to/first/directory",
+  "assets/file/css/mycss.css",
+  "assets/file/js/debugger/"
+  // here we will ignore a php file, a folder called directory
+  // a mycss.css file (added the css href) and all js files inside
+  // the folder assets/file/js/debugger. note that the ignorings
+  // related to the front end assets point to its src/href attrs,
+  // and the files related to the backend points to its real paths
 ]);
 $reloader->init();
 ```
 
-Obs: By default, you must add absolute paths on ignore() in case you had not setted the ROOT option (see setRoot method). In case it was setted, the paths must be relative to the ROOT. The ignore() method is very useful if you're script include some files which changes dinamically (causing refresh loops) or if you just dont need to watch them, increasing the speed of the process and keep a clean process
-
-Obs: If you added a folder on the ignore list, and this folder serve a js file (for example) in your page via \<script> tag, you must add the src of its js on the \ignore() array. This happens because most of the times, the src and link paths are different on front end from the back end.
+Obs: if you add a js folder in your ignore list like '/myjs' hopping to ignore all js files there, but in the script tags the src attributes are like "project/myjs/filename.js", you must add 'project/myjs' in your ignore, beside the Root. remember: front end src/href ignorigins are relative to these attributes, not its real paths. But if you have a folder 'debugger/files' for example, with include some php files in your code and you want to ignore them, add the folder to ignore respecting the root config. Anyway, if your php files and assets dont pass thought a path mod (htaccess or something like), and share the same Root path, you can add a single key to ignore both front end and back end matters.
 
 # GENERAL METHODS
 
