@@ -32,8 +32,6 @@ You only need to set this options when using setWatchDirs() or to set a Root pat
 
 # THE ignore() METHOD
 
-
-
 Use this method to unwatch a folder, a file, or a src/href paths. The hot reloader will ignore all folders and files setted in the ignore. Maybe you can find some diferences in ignoring server side or client side matters.
 
 To ignore front end (src/links added), please include the element src/href on the ignore. This happen cause, due htaccess and other technologies, sometimes the src path is not really the real location path of a style or css file. You can add folders relative to the script/link src/href to ignore all files inside a given path. 
