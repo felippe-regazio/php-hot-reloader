@@ -181,6 +181,7 @@ Class HotReloader {
             oldLinkElements = {},
             interval = 1000,
             loaded = false,
+            phperror = false,
             active = { "html": 1, "js": 1, "css": 1 };
         var Live = {
           // performs a cycle per interval
@@ -248,6 +249,46 @@ Class HotReloader {
             // yep
             loaded = true;
           },
+          getHTML: function ( url, callback ) {
+            // Feature detection
+            if ( !window.XMLHttpRequest ) return;
+            // Create new request
+            var xhr = new XMLHttpRequest();
+            // Setup callback
+            xhr.onload = function() {
+              if ( callback && typeof( callback ) === 'function' ) {
+                callback( this.responseXML );
+              }
+            }
+            // Get the HTML
+            xhr.open( 'GET', url );
+            xhr.responseType = 'document';
+            xhr.send();
+          },          
+          checkBackEndFails: function(newInfo, oldInfo) {
+            /*
+              this little section try to catch errors
+              from the backend that could break the watcher
+              before the page reloads. if the newInfo key has 
+              sended an Etag, Last-Modified and Content-Length 
+              are null, and the Content-Type = "text/html", this 
+              Means a possible back end error on code, so we
+              stop the reloadings a little and console the 
+              possible error. Then, we will get the current page
+              content with a xhr request and dinamically print its
+              content on screen, overwriting the current one. 
+              This is an special situation of error code. 
+            */
+            if(newInfo['Content-Type'] == 'text/html'){
+              if(newInfo['Etag'] == null && newInfo['Last-Modified'] == null && newInfo['Content-Length'] == null){
+                if(!phperror) console.error("Hot Reloader tracked a possible error on your back end code");
+                phperror = true;
+                Live.getHTML( window.location.href, function (response) {
+                  document.documentElement.innerHTML = response.documentElement.innerHTML;
+                });                
+              }
+            }
+          },
           // check all tracking resources for changes
           checkForChanges: function () {
             for (var url in resources) {
@@ -257,16 +298,8 @@ Class HotReloader {
                 var oldInfo = resources[url],
                     hasChanged = false;
                 resources[url] = newInfo;
-                // this little section try to catch errors
-                // from the backend that could break live.js.
-                // if the newInfo key has sended an Etag, 
-                // Last-Modified and Content-Length = null 
-                // And the Content-Type = "text/html", this 
-                // Means a possible back end error on code
-                if( newInfo['Content-Type'] == 'text/html' && newInfo['Etag'] == null && newInfo['Last-Modified'] == null && newInfo['Content-Length'] == null){
-                  console.log("Hot Reloader tracked a possible error on your back end code");
-                  window.location.reload();
-                };
+                // Check for back end fails
+                Live.checkBackEndFails(newInfo, oldInfo);
                 // If content exists, and is not totally empty:
                 for (var header in oldInfo) {
                   // do verification based on the header type
