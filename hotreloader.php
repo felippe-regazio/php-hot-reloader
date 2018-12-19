@@ -162,7 +162,7 @@ Class HotReloader {
       echo "HotReloader: Failed to generate Etag Hash";
   }
 
-  // this function adds the live.js on the page with a few modifications. the script 
+  // this function adds the live.js on the page with several modifications. the script 
   // will keep watching the current address every 1 second. it will check changes in 
   // files with extension js, html and css, based on your page \<header>, and will 
   // check the page headers for changes in etag, last-modified, content lenght and type.

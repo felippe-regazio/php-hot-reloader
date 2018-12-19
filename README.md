@@ -1,6 +1,9 @@
 # PHP HOT RELOADER
 
-This is a tiny class which adds the live reload feature to any php project. Its just a php hash of all included files on your code script and a live.js script with a few modifications. When the hash or any of your assets has changed, the page will automatically reload.
+This is a tiny class which adds the live reload feature to any php project. It allows you to see your page dinamically changing while you code, without have to keep refreshing page on every change.
+
+This script was written by Felippe Regazio.
+The javascript part includes live.js script with several modifications.
 
 # USAGE
 
