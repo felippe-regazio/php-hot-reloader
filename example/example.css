@@ -3,6 +3,11 @@ p{
     this css file is triggering changes on the fly 
     edit this file with this page opened
   */
-	color: darkcyan;
+	color: gray;
+  font-size: 30px;
 	font-weight: 700;
+  margin-bottom: 12px;
+}
+p.small{
+  font-size: 14px;
 }
