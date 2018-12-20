@@ -15,46 +15,134 @@
  */
 class HotReloader {
 
+  /**
+   * Constructor
+   *
+   * Simple constructor method containing the class params
+   *
+   * @return void
+  */
   function __construct() {
     $this->ROOT      = __DIR__; // the root of directories
-    $this->WATCHMODE = "auto";  // auto/added/includes/tags
     $this->DIFFMODE  = "mtime"; // mtime/md5
+    $this->WATCHMODE = "auto";  // auto/includes/added/tags
     $this->IGNORE    = [];      // file or folders to ignore
     $this->ADDED     = [];      // extra files to be watched
   }
 
-  // single setters
+  /**
+   * Set Root
+   *
+   * Set the Reloader root path for the add() and the ignore()
+   * methods. If, when initialized, there is no Root path, the
+   * location of the hotreloader.php file will be setted as root
+   *
+   * @param String
+   * @return void
+  */  
+  public function setRoot( String $root ){
+    $this->ROOT = $root;
+  }  
 
+  /**
+   * Set Diff Mode
+   *
+   * Set the way the Reloader must hash the files and 
+   * folders. It can be 'mtime' or 'md5'. The mtime is the 
+   * default mode. Anyway, final unique checksums will always 
+   * use md5
+   *
+   * @param String
+   * @return void
+  */
   public function setDiffMode( String $mode){
     $this->DIFFMODE = $mode;
   }
 
+  /**
+   * Set Watch Mode
+   *
+   * Set what things will be whatched by the reloader. 
+   * It haves 4 modes:
+   *
+   * 1. "auto" - will react to changes in included/required files
+   * on the code, added files using add() method, and the script
+   * and link tags that incudes js and css files on the code
+   *
+   * 2. "includes" - will react to changes only in the included/required
+   * files on the code, and on the script and link tags
+   *
+   * 3. "added" - will react to changes only in the files setted from
+   * the add() method, and on the script and link tags
+   *
+   * 4. "tags" - will react to changes only in the script and link tags   
+   * on the code
+   *
+   * @param String
+   * @return void
+   */
   public function setWatchMode( String $mode){
     $this->WATCHMODE = $mode;
   }
-  
-  public function setRoot( String $root ){
-    $this->ROOT = $root;
-  }
 
+  /**
+   * Ignore
+   * 
+   * Set an array of files or folder paths to be ignored by the reloader.
+   * The paths and filenames must be relative to the setted ROOT
+   *
+   * @param Array
+   * @return void
+   */
   public function ignore( Array $array ){
     $this->IGNORE = array_filter(array_unique($array));
   }
 
+  /**
+   * Add
+   * 
+   * Set an array of files or folder paths to be watched by the reloader.
+   * The files or folders included with add() will trigger a page reload 
+   * when changed even if they have any link with the current code. Folders
+   * are recursively added, so, a change in any file or subfolder will be 
+   * relevant
+   *
+   * @param Array
+   * @return void
+   */
   public function add( Array $array ){
     $this->ADDED = array_filter(array_unique($array));
   }  
 
-  // general setter
-
+  /**
+   * Set Shorthand Method
+   * 
+   * This is a shorthand for all setters, it allows to set parameters to
+   * the reloader with one function. The parameters can be:
+   *
+   * ROOT : set the Root Path
+   * DIFFMODE : set the diff mode
+   * WATCHMODE : set the watch mode
+   * IGNORE : an array of files or folders to ignore
+   * ADDED : an array of files or folders to watch
+   *
+   * @param Array
+   * @return void
+   */
   public function set( Array $options ){
     foreach($options as $key => $val){
       $this->$key = $val;
     }
   }
 
-  // getters
-
+  /**
+   * Current Config
+   * 
+   * This function prints relevant information about the reloader current
+   * configuration and state. Its to debug and information purposes only
+   * 
+   * @return void
+   */
   public function currentConfig(){
     return [
       "STATEHASH" => $this->createStateHash(),
@@ -64,23 +152,46 @@ class HotReloader {
     ];
   }
 
-  /* 
-    this is the main function. it sends the hash of watchings on doc headers
-    and starts the javascript watcher (see live.js documentation for more about)
-  */
+  /**
+   * Initiate the reloader
+   * 
+   * Start the Reloader with the setted configurations or the default
+   * for the non setted ones. This functions gets the application fingerprint
+   * and sends on every current page request (Etag), than add the JS watcher.
+   * When this fingerprint changes, means a change on the page, when it happens,
+   * a reload will be triggered by the JS wich is always wathing this changes   
+   *
+   * @return void
+   */
   public function init(){
     $this->addEtagOnHeader();
     $this->addJsWatcher();
-  }   
-    
-  // PRIVATES ------------------------------------------------------------------
+  }
 
-  /*
-    this functions collects all the hashes from the included files and from the
-    files in ADDED array (from add() method). this two lists of hashes are merged
-    and than transform in a unique md5 hash, which will be the app state fingerprint.
-    when this fingerprint changes means a change on the assisted files contents
-  */
+  /**
+   * Add the application state hash on the Etag of the Headers
+   *
+   * This function will get a new state hash of the current code and its dependencies
+   * an will treat this hash as a fingerprint of your script state. then will set this 
+   * hash as an etag on the current script headers, a hash change means a code change
+   *
+   * @return void
+  */    
+  function addEtagOnHeader(){
+      $hash = $this->createStateHash();
+      if( $hash ) header( "Etag: " . $hash ); return true;
+      echo "HotReloader: Failed to generate Etag Hash";
+  }     
+
+  /**
+   * Create the application state hash
+   * 
+   * Collects all the timestamps/hashes from the included files and from the added() 
+   * method, and than transforms it into a unique md5 hash. this unique hash is your 
+   * app fingerprint.
+   *
+   * @return String
+   */    
   private function createStateHash(){
     $hashes = [];
     // get the includes hashlist
@@ -91,18 +202,20 @@ class HotReloader {
     if($this->WATCHMODE == "auto" || $this->WATCHMODE == "added"){
       $hashes = array_merge($hashes, $this->getADDEDHashList());
     }
-    // reduce the hashes
+    // avoid duplicated or empty values
     $hashes = array_unique(array_filter($hashes));
-    // transform the hash lists in a md5 fingerprint
+    // transform the hash list in a unique md5 checksum
     return md5(implode("",$hashes));
   }
 
-  /*
-    this function check for all files that was required/included on the current 
-    code and creates a hashe/timestamps list for each file, thatn creates a unique
-    hash of this set of hashes. the diffmode can be mtime (modification time) or
-    md5 that will create a md5 checksum of each file than a hash of this set
-  */
+  /**
+   * Generates a hash list of all included/required files of the running file
+   *
+   * This function gets all the included/required files on the current code
+   * and return a list of timestamps or md5 checksums of each file
+   *
+   * @return Array
+   */
   private function getIncludesHashList(){
     $hashes = [];
     // this will hash all includes/requires on current code
@@ -117,10 +230,13 @@ class HotReloader {
     return $hashes;    
   }
 
-  /*
-    this function build the file list from the ADDED files and folders
-    and return an array with all this files with abs paths. the foders
-    added in this array are readded recursivelly
+  /**
+   * Generates a hash list of all files added to watch with the method add() 
+   *
+   * This function build the hash/timestamp list of the files and folders which
+   * came from the added() method
+   *
+   * @return Array
   */
   private function getADDEDHashList(){
     $hashes = [];
@@ -149,10 +265,14 @@ class HotReloader {
     return $hashes; 
   }
 
-  /*
-    this function returns a hash (mtime or md5) from an entire directory,
-    its used to hash directories that could be included on the array ADDED
-  */
+  /**
+   * Generates a unique hash of an entire directory
+   *
+   * Generates a hash/timestamp array of all files and folders inside the
+   * given directory, than transform this array in a unique string
+   *
+   * @return String
+  */    
   private function getDirectoryHash($directory){
     $mode = $this->DIFFMODE;
     if (! is_dir($directory)) return false;
@@ -175,10 +295,13 @@ class HotReloader {
     return implode("",$files);
   }  
 
-  /*
-    this function receives a file path and check if this file must be ignored. 
-    the rule is if the file is in the IGNORE array, or in a folder which is there
-    the files passed to the willBeIgnored must be with absolute path always
+  /**
+   * Will Be Ignored ?
+   *
+   * Check if a given path (abs path) must be ignored by the Reloader
+   * The given paths are always converted to be relative to the Root
+   *
+   * @return Boolean
   */
   private function willBeIgnored(String $file){
     // if the ignore list is not empty
@@ -199,23 +322,15 @@ class HotReloader {
     return false;
   } 
 
-  /* 
-    this function will get a new state hash of the current code and its dependencies
-    an will treat this hash as a fingerprint of your script state. then will set this 
-    hash as an etag on the current script headers, a hash change means a code change
-  */
-  function addEtagOnHeader(){
-      $hash = $this->createStateHash();
-      if( $hash ) header( "Etag: " . $hash ); return true;
-      echo "HotReloader: Failed to generate Etag Hash";
-  }
-
-  /*
-    this function adds the live.js on the page with several modifications. the script 
-    will keep watching the current address every 1 second. it will check changes in 
-    files with extension js, html and css, based on your page \<header>, and will 
-    check the page headers for changes in etag, last-modified, content lenght and type.
-    when the script traps a file or a hash change, the page will automatically reload
+  /**
+   * Add the Live.js script to the current page
+   *
+   * This javascript code will add the live.js script to the page with
+   * several modifications. This script will watch the page headers, scripts
+   * and links, based on the Reloader configuration. When a change is catched
+   * a page reload will be triggered or the changes will be directly applied.
+   *
+   * @return void
   */
   private function addJsWatcher(){
     ob_start(); ?>
