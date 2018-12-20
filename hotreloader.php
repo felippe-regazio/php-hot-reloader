@@ -17,10 +17,10 @@ class HotReloader {
 
   function __construct() {
     $this->DIFFMODE  = "mtime"; // mtime or md5
-    $this->IGNORE    = [""];    // file/folders to ignore
-    $this->WATCHMODE = "auto";  // auto or dirs
-    $this->WATCHDIRS = [""];    // the directories to watch
-    $this->ROOT      = __DIR__; // the root of those directories
+    $this->WATCHMODE = "auto";  // auto/includes/tags
+    $this->IGNORE    = [];      // file/folders to ignore
+    $this->INCLUDE   = [];      // extra files to be watched
+    $this->ROOT      = __DIR__; // the root of directories
   }
 
   // single setters
@@ -32,17 +32,13 @@ class HotReloader {
   public function setWatchMode( String $mode){
     $this->WATCHMODE = $mode;
   }
-
-  public function setWatchDirs( Array $dirs ){
-    $this->WATCHDIRS = $dirs;
-  }
   
   public function setRoot( String $root ){
     $this->ROOT = $root;
   }
 
   public function ignore( Array $array ){
-    $this->IGNORE = $array;
+    $this->IGNORE = array_filter(array_unique($array));
   }  
 
   // general setter
@@ -57,29 +53,76 @@ class HotReloader {
 
   public function currentConfig(){
     return [
-      "ROOT"      => $this->ROOT,
+      "STATEHASH" => $this->createStateHash($this->DIFFMODE),
       "DIFFMODE"  => $this->DIFFMODE,
-      "WATCHMODE" => $this->WATCHMODE,
-      "WATCHING"  => $this->WATCHDIRS,
       "IGNORING"  => $this->IGNORE,
-      "STATEHASH" => $this->createStateHash($this->MODE)
+      "ROOT"      => $this->ROOT
     ];
   }
 
-  // this is the main function. it sends the hash of watchings on doc headers
-  // and starts the javascript watcher (see live.js documentation for more about)
-  // this functions depends on all the other functions and vars to properly run
+  /* 
+    this is the main function. it sends the hash of watchings on doc headers
+    and starts the javascript watcher (see live.js documentation for more about)
+  */
   public function init(){
     $this->addEtagOnHeader();
     $this->addJsWatcher();
   }   
-
+    
   // PRIVATES ------------------------------------------------------------------
 
-  // this function receives a directory and generates a hash based on its 
-  // contents and subdirectories contents. the hash is created from md5
-  // of all files, or a timestamp fingerprint of all files, in the passed ri. 
-  // for details about mtime or md5 option, please see the README.md file 
+  /*
+    this function check for all files that was required/included on the current 
+    code and creates a hashe/timestamps list for each file, thatn creates a unique
+    hash of this set of hashes. the diffmode can be mtime (modification time) or
+    md5 that will create a md5 checksum of each file than a hash of this set
+  */
+  private function createStateHash(String $mode){
+    // this will hash all includes/requires on current code
+    $hashes = [];
+    foreach( get_included_files() as $file ){
+      // check if the file is not setted on in a dir setted on ignore list
+      if( !$this->willBeIgnored($file) ){
+        $hashes[] = ($mode == "mtime" ? stat($file)['mtime'] : md5_file($file));
+      }
+    }      
+    // this will hash all files and folders added in INCLUDE array (extra files)
+    
+    // return the new hash or empty/false
+    return md5(implode("",$hashes)); 
+  }
+
+  /*
+    this function receives a file path and check if this file must be ignored. 
+    the rule is if the file is in the IGNORE array, or in a folder which is there
+    the files passed to the willBeIgnored must be with absolute path always
+  */
+  private function willBeIgnored(String $file){
+    // if the ignore list is not empty
+    if( !empty(array_filter($this->IGNORE)) ){
+      // check if the file passed existis on the array
+      foreach( $this->IGNORE as $ignore ){
+        // get the absolute path os files to be ignored
+        // the files in IGNORE are relative to $this->ROOT
+        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+        $ignore = $this->ROOT.$DS.$ignore;
+        //check if must ignore the file (is in ignore or in a folder which is)
+        if($file == $ignore || strpos(dirname($file),$ignore) !== false && strpos(dirname($file),$ignore) == 0){
+          return true;
+        }
+      }
+    }
+    // everything has failed
+    return false;
+  }
+
+  /*
+    if there is something added on INCLUDE, this function receives the 
+    directories and generates a hash based on its contents and subdirs 
+    contents. the default mode to hash is by modification date. but, if
+    use are in md5 mode, the diff will be generated using md5 checksums
+    of each file and than a unique hash of this md5 set.
+  */
   private function hashDirectory($directory, $mode){
     if (! is_dir($directory)) return false;
     $files = array();
@@ -97,76 +140,26 @@ class HotReloader {
     }
     $dir->close();
     return md5(implode('', $files));
-  }
+  }  
 
-  // this function check if a path exists in a given array of paths. the checking
-  // will check if the searched path is a substring of any key in the given array
-  private function willBeIgnored(String $searched){
-    if( !empty(array_filter($this->IGNORE)) ){
-      $array = $this->IGNORE;
-      foreach( $array as $key ){
-        // check if the ROOT was setted
-        if( !empty($this->ROOT) ){
-          $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
-          $key = $this->ROOT.$DS.$key;
-        }
-        // check if must ignore
-        if( ($searched == $key) || (strpos($searched, $key) !== false) && (strpos($searched, $key) == 0) ){
-          return true;
-        }
-      }
-    }
-    // everything has failed
-    return false;
-  }
-
-  // this funtion usedthe to create an hash based on the current script state
-  // if you are running in "auto" mode, the script will check all included files
-  // and generate a hash of them using mtime or md5 (depending of your choice).
-  // if you are using "dirs" mode, the script will check the watchdirs and hash
-  // the entire directories there (mtime or md5) depending of your choice, if
-  // you dont passed any watchdirs, the current script directory will be used.
-  // this generated hash will be sended in the doc headers as a unique fingerprint
-  // the live.js will be watching the headers, if this fingerprint changes, the
-  // script knows that something has changed and will trigger an automatic reload
-  private function createStateHash($mode){
-    $hashes = [];
-    if( $this->WATCHMODE == "auto" ){
-      // if watchmode = auto, we will hash only include files related to the
-      // current file, this options is lighter than the 'dir' option for ex
-      foreach( get_included_files() as $file ){
-        // check if the file is not setted on in a dir setted on ignore list
-        if( !$this->willBeIgnored($file) ){
-          $hashes[] = ($mode == "mtime" ? stat($file)['mtime'] : md5_file($file));
-        }
-      }      
-    } elseif( $this->WATCHMODE == "dirs" ) {
-      // if the watchmode = dir, we will watch the entire directories setted in
-      // this watch (if none, the script current dir will be taken) and hashe it
-      foreach( $this->WATCHDIRS as $dir ){
-        if( !$this->willBeIgnored($dir) ){
-          $hashes[] = $this->hashDirectory($this->ROOT.DIRECTORY_SEPARATOR.$dir, $this->DIFFMODE);
-        }
-      }
-    }
-    // return the new hash or empty/false
-    return md5(implode("",$hashes)); 
-  }
-
-  // this function will create a new state hash based on your configurations
-  // this hash will be a fingerprint of your script related files state. then
-  // this funciton will set this hash as an etag on the current script headers
+  /* 
+    this function will get a new state hash of the current code and its dependencies
+    an will treat this hash as a fingerprint of your script state. then will set this 
+    hash as an etag on the current script headers, a hash change means a code change
+  */
   function addEtagOnHeader(){
       $hash = $this->createStateHash($this->DIFFMODE);
       if( $hash ) header( "Etag: " . $hash ); return true;
       echo "HotReloader: Failed to generate Etag Hash";
   }
 
-  // this function adds the live.js on the page with several modifications. the script 
-  // will keep watching the current address every 1 second. it will check changes in 
-  // files with extension js, html and css, based on your page \<header>, and will 
-  // check the page headers for changes in etag, last-modified, content lenght and type.
-  // when the script traps a file or header info changing, the page will be auto reloaded
+  /*
+    this function adds the live.js on the page with several modifications. the script 
+    will keep watching the current address every 1 second. it will check changes in 
+    files with extension js, html and css, based on your page \<header>, and will 
+    check the page headers for changes in etag, last-modified, content lenght and type.
+    when the script traps a file or a hash change, the page will automatically reload
+  */
   private function addJsWatcher(){
     ob_start(); ?>
       <script>
@@ -209,8 +202,11 @@ class HotReloader {
             for (var i = 0; i < scripts.length; i++) {
               var script = scripts[i], src = script.getAttribute("src");
               // check if the script folder are not in the ignore list or if
-              // the script hasnt the hidden attribute. if so, ignore the tag
-              if(script.hidden || ignoreList.includes(script.baseURI)) continue;
+              // of if the script src are not in the ignore list or if the
+              // script hasnt the hidden attribute. if true, ignore the tag
+              if(script.hidden || ignoreList.includes(script.baseURI) || ignoreList.includes(src)) {
+                continue;
+              }
               // if the script wasnt ignored
               if (src && isLocal(src))
                 uris.push(src);
@@ -226,9 +222,12 @@ class HotReloader {
             // track local css urls
             for (var i = 0; i < links.length && active.css; i++) {
               var link = links[i], rel = link.getAttribute("rel"), href = link.getAttribute("href", 2);
-              // check if the link(css) folder are not in the ignore list or if
-              // the link tag hasnt the hidden attribute. if so, ignore the tag
-              if(link.hidden || ignoreList.includes(link.baseURI)) continue;
+              // check if the link folder are not in the ignore list or if
+              // of if the link src are not in the ignore list or if the
+              // link hasnt the hidden attribute. if true, ignore the tag
+              if(link.hidden || ignoreList.includes(link.baseURI) || ignoreList.includes(href)) {
+                continue;
+              }
               // if the link tag wasnt ignored
               if (href && isLocal(href)) {
                 uris.push(href);
@@ -282,9 +281,10 @@ class HotReloader {
             if(newInfo['Content-Type'] == 'text/html'){
               if(newInfo['Etag'] == null && newInfo['Last-Modified'] == null && newInfo['Content-Length'] == null){
                 if(!phperror){
-                  console.error("Hot Reloader tracked a possible error on your back end code");                  
+                  console.error("Hot Reloader tracked a possible error on your back end code");
                 }
                 Live.getHTML( window.location.href, function (response) {
+                  if(document.documentElement.innerHTML != response.documentElement.innerHTML)
                   document.documentElement.innerHTML = response.documentElement.innerHTML;
                 });
                 phperror = true;

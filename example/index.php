@@ -8,7 +8,7 @@
 	<div>
 		<?php 
 			require "example.php";
-			require "ignored.php"; 
+			require "ignored.php";
 		?>
 	</div>
 	<script src="example.js" type="text/javascript"></script>
