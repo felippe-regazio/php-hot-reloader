@@ -21,6 +21,9 @@
 	$reloader->ignore([
 		"ignored.php"
 	]);
+	$reloader->add([
+		"externs"
+	]);
 	$reloader->init();
 ?>
 </html>

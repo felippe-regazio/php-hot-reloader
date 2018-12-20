@@ -16,11 +16,11 @@
 class HotReloader {
 
   function __construct() {
-    $this->DIFFMODE  = "mtime"; // mtime or md5
-    $this->WATCHMODE = "auto";  // auto/includes/tags
-    $this->IGNORE    = [];      // file/folders to ignore
-    $this->INCLUDE   = [];      // extra files to be watched
     $this->ROOT      = __DIR__; // the root of directories
+    $this->WATCHMODE = "auto";  // auto/added/includes/tags
+    $this->DIFFMODE  = "mtime"; // mtime/md5
+    $this->IGNORE    = [];      // file or folders to ignore
+    $this->ADDED     = [];      // extra files to be watched
   }
 
   // single setters
@@ -39,6 +39,10 @@ class HotReloader {
 
   public function ignore( Array $array ){
     $this->IGNORE = array_filter(array_unique($array));
+  }
+
+  public function add( Array $array ){
+    $this->ADDED = array_filter(array_unique($array));
   }  
 
   // general setter
@@ -53,7 +57,7 @@ class HotReloader {
 
   public function currentConfig(){
     return [
-      "STATEHASH" => $this->createStateHash($this->DIFFMODE),
+      "STATEHASH" => $this->createStateHash(),
       "DIFFMODE"  => $this->DIFFMODE,
       "IGNORING"  => $this->IGNORE,
       "ROOT"      => $this->ROOT
@@ -72,25 +76,104 @@ class HotReloader {
   // PRIVATES ------------------------------------------------------------------
 
   /*
+    this functions collects all the hashes from the included files and from the
+    files in ADDED array (from add() method). this two lists of hashes are merged
+    and than transform in a unique md5 hash, which will be the app state fingerprint.
+    when this fingerprint changes means a change on the assisted files contents
+  */
+  private function createStateHash(){
+    $hashes = [];
+    // get the includes hashlist
+    if($this->WATCHMODE == "auto" || $this->WATCHMODE == "includes"){
+      $hashes = array_merge($hashes, $this->getIncludesHashList());
+    }
+    // get the ADDED hashlist
+    if($this->WATCHMODE == "auto" || $this->WATCHMODE == "added"){
+      $hashes = array_merge($hashes, $this->getADDEDHashList());
+    }
+    // reduce the hashes
+    $hashes = array_unique(array_filter($hashes));
+    // transform the hash lists in a md5 fingerprint
+    return md5(implode("",$hashes));
+  }
+
+  /*
     this function check for all files that was required/included on the current 
     code and creates a hashe/timestamps list for each file, thatn creates a unique
     hash of this set of hashes. the diffmode can be mtime (modification time) or
     md5 that will create a md5 checksum of each file than a hash of this set
   */
-  private function createStateHash(String $mode){
-    // this will hash all includes/requires on current code
+  private function getIncludesHashList(){
     $hashes = [];
-    foreach( get_included_files() as $file ){
-      // check if the file is not setted on in a dir setted on ignore list
-      if( !$this->willBeIgnored($file) ){
-        $hashes[] = ($mode == "mtime" ? stat($file)['mtime'] : md5_file($file));
+    // this will hash all includes/requires on current code
+    if(!empty(get_included_files())){
+      foreach(get_included_files() as $file){
+        // check if the file is not setted on in a dir setted on ignore list
+        if( !$this->willBeIgnored($file) ){
+          $hashes[] = ($this->DIFFMODE == "mtime" ? stat($file)['mtime'] : md5_file($file));
+        }
       }
-    }      
-    // this will hash all files and folders added in INCLUDE array (extra files)
-    
-    // return the new hash or empty/false
-    return md5(implode("",$hashes)); 
+    }
+    return $hashes;    
   }
+
+  /*
+    this function build the file list from the ADDED files and folders
+    and return an array with all this files with abs paths. the foders
+    added in this array are readded recursivelly
+  */
+  private function getADDEDHashList(){
+    $hashes = [];
+    // this will hash all files and folder in ADDED array
+    if(!empty($this->ADDED)){
+      foreach($this->ADDED as $add){
+        // create the path
+        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+        $add = $this->ROOT.$DS.$add;
+        // do the hash
+        if( is_dir($add) ){
+          if( !$this->willBeIgnored($add) ){
+            // if is a dir, hash the entire directory (mtime or md5)
+            // the directorie hash is simple an implode of the all hashes
+            // of the all files included in this dir and its subdirectories
+            $hashes[] = $this->getDirectoryHash($add);
+          }
+        } else {
+          if( file_exists($add) && !$this->willBeIgnored($add) ){
+            // if is a file, get the file hash or mtime
+            $hashes[] = ($this->DIFFMODE == "mtime" ? stat($add)['mtime'] : md5_file($add));
+          }
+        }
+      }
+    }
+    return $hashes; 
+  }
+
+  /*
+    this function returns a hash (mtime or md5) from an entire directory,
+    its used to hash directories that could be included on the array ADDED
+  */
+  private function getDirectoryHash($directory){
+    $mode = $this->DIFFMODE;
+    if (! is_dir($directory)) return false;
+    $files = array();
+    $dir = dir($directory);
+    while (false !== ($file = $dir->read())){
+      if ($file != '.' and $file != '..'){
+        if (is_dir($directory . DIRECTORY_SEPARATOR . $file)){
+          $files[] = $this->hashDirectory($directory . DIRECTORY_SEPARATOR . $file, $mode);
+        }
+        else{
+          $curr_file = $directory.DIRECTORY_SEPARATOR.$file;
+          if(!$this->willBeIgnored($curr_file)){
+            $files[] = ($mode == "mtime" ? stat($curr_file)['mtime'] : md5_file($curr_file));
+          }
+        }
+      }
+    }
+    $dir->close();
+    return implode("",$files);
+  }  
 
   /*
     this function receives a file path and check if this file must be ignored. 
@@ -114,33 +197,7 @@ class HotReloader {
     }
     // everything has failed
     return false;
-  }
-
-  /*
-    if there is something added on INCLUDE, this function receives the 
-    directories and generates a hash based on its contents and subdirs 
-    contents. the default mode to hash is by modification date. but, if
-    use are in md5 mode, the diff will be generated using md5 checksums
-    of each file and than a unique hash of this md5 set.
-  */
-  private function hashDirectory($directory, $mode){
-    if (! is_dir($directory)) return false;
-    $files = array();
-    $dir = dir($directory);
-    while (false !== ($file = $dir->read())){
-      if ($file != '.' and $file != '..'){
-        if (is_dir($directory . DIRECTORY_SEPARATOR . $file)){
-          $files[] = $this->hashDirectory($directory . DIRECTORY_SEPARATOR . $file, $mode);
-        }
-        else{
-          $curr_file = $directory . DIRECTORY_SEPARATOR . $file;
-          $files[] = ($mode == "mtime" ? stat($curr_file)['mtime'] : md5_file($curr_file));
-        }
-      }
-    }
-    $dir->close();
-    return md5(implode('', $files));
-  }  
+  } 
 
   /* 
     this function will get a new state hash of the current code and its dependencies
@@ -148,7 +205,7 @@ class HotReloader {
     hash as an etag on the current script headers, a hash change means a code change
   */
   function addEtagOnHeader(){
-      $hash = $this->createStateHash($this->DIFFMODE);
+      $hash = $this->createStateHash();
       if( $hash ) header( "Etag: " . $hash ); return true;
       echo "HotReloader: Failed to generate Etag Hash";
   }
