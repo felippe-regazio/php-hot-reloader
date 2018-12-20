@@ -1,5 +1,8 @@
 p{
-	/* with this page opened, change me */
+	/* 
+    this css file is triggering changes on the fly 
+    edit this file with this page opened
+  */
 	color: darkcyan;
 	font-weight: 700;
 }
