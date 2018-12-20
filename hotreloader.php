@@ -10,7 +10,7 @@
  * Redistributions of files must retain the above copyright notice.
  *
  * @copyright     Copyright (c) Felippe Regazio, and releated wrapped files
- * @since         1.0.0
+ * @version       BETA
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 class HotReloader {
