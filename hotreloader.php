@@ -166,8 +166,7 @@ class HotReloader {
    * @return void
    */
   public function init(){
-    // only creates the Application State Hash if not in 'tags' Watch Mode
-    if($this->WATCHMODE != "tags") $this->addEtagOnHeader();
+    $this->addEtagOnHeader();
     // add the JS Watcher
     $this->addJsWatcher();
   }
@@ -198,6 +197,9 @@ class HotReloader {
    */    
   private function createStateHash(){
     $hashes = [];
+    // when in 'tags' watch mode, we send a fake hash just to
+    // satisfty the JS watch and not trigger changes by Etag
+    if($this->WATCHMODE == "tags") return "HotReloaderTagsOnly";
     // get the includes mtime/hashlist
     if($this->WATCHMODE == "auto" || $this->WATCHMODE == "includes"){
       $hashes = array_merge($hashes, $this->getIncludesHashList());
