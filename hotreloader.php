@@ -40,7 +40,7 @@ class HotReloader {
    * @param String
    * @return void
   */  
-  public function setRoot( String $root ){
+  public function setRoot(String $root){
     $this->ROOT = $root;
   }  
 
@@ -55,7 +55,7 @@ class HotReloader {
    * @param String
    * @return void
   */
-  public function setDiffMode( String $mode){
+  public function setDiffMode(String $mode){
     $this->DIFFMODE = $mode;
   }
 
@@ -81,7 +81,7 @@ class HotReloader {
    * @param String
    * @return void
    */
-  public function setWatchMode( String $mode){
+  public function setWatchMode(String $mode){
     $this->WATCHMODE = $mode;
   }
 
@@ -94,7 +94,7 @@ class HotReloader {
    * @param Array
    * @return void
    */
-  public function ignore( Array $array ){
+  public function ignore(Array $array){
     $this->IGNORE = array_filter(array_unique($array));
   }
 
@@ -110,7 +110,7 @@ class HotReloader {
    * @param Array
    * @return void
    */
-  public function add( Array $array ){
+  public function add(Array $array){
     $this->ADDED = array_filter(array_unique($array));
   }  
 
@@ -129,7 +129,7 @@ class HotReloader {
    * @param Array
    * @return void
    */
-  public function set( Array $options ){
+  public function set(Array $options){
     foreach($options as $key => $val){
       $this->$key = $val;
     }
@@ -146,9 +146,11 @@ class HotReloader {
   public function currentConfig(){
     return [
       "STATEHASH" => $this->createStateHash(),
+      "ROOT"      => $this->ROOT,
       "DIFFMODE"  => $this->DIFFMODE,
+      "WATCHMODE" => $this->DIFFMODE,
       "IGNORING"  => $this->IGNORE,
-      "ROOT"      => $this->ROOT
+      "ADDED"     => $this->ADDED,
     ];
   }
 
@@ -164,7 +166,9 @@ class HotReloader {
    * @return void
    */
   public function init(){
-    $this->addEtagOnHeader();
+    // only creates the Application State Hash if not in 'tags' Watch Mode
+    if($this->WATCHMODE != "tags") $this->addEtagOnHeader();
+    // add the JS Watcher
     $this->addJsWatcher();
   }
 
@@ -180,7 +184,7 @@ class HotReloader {
   function addEtagOnHeader(){
       $hash = $this->createStateHash();
       if( $hash ) header( "Etag: " . $hash ); return true;
-      echo "HotReloader: Failed to generate Etag Hash";
+      echo "Hot Reloader failed to generate Application State Hash";
   }     
 
   /**
@@ -194,17 +198,17 @@ class HotReloader {
    */    
   private function createStateHash(){
     $hashes = [];
-    // get the includes hashlist
+    // get the includes mtime/hashlist
     if($this->WATCHMODE == "auto" || $this->WATCHMODE == "includes"){
       $hashes = array_merge($hashes, $this->getIncludesHashList());
     }
-    // get the ADDED hashlist
+    // get the ADDED files/folders mtime/hashlist
     if($this->WATCHMODE == "auto" || $this->WATCHMODE == "added"){
       $hashes = array_merge($hashes, $this->getADDEDHashList());
     }
     // avoid duplicated or empty values
     $hashes = array_unique(array_filter($hashes));
-    // transform the hash list in a unique md5 checksum
+    // transform all hashes into a unique md5 checksum
     return md5(implode("",$hashes));
   }
 
@@ -240,23 +244,23 @@ class HotReloader {
   */
   private function getADDEDHashList(){
     $hashes = [];
-    // this will hash all files and folder in ADDED array
+    // this will hash all files and folders in ADDED array
     if(!empty($this->ADDED)){
       foreach($this->ADDED as $add){
-        // create the path
+        // create the added path relative to the ROOT const
         $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
         $add = $this->ROOT.$DS.$add;
         // do the hash
-        if( is_dir($add) ){
+        if(is_dir($add)){
           if( !$this->willBeIgnored($add) ){
             // if is a dir, hash the entire directory (mtime or md5)
-            // the directorie hash is simple an implode of the all hashes
-            // of the all files included in this dir and its subdirectories
+            // the directorie hash is an implode of hashes of all files there
+            // the getDirectoryHash always return a md5 checksum of the directory
             $hashes[] = $this->getDirectoryHash($add);
           }
         } else {
           if( file_exists($add) && !$this->willBeIgnored($add) ){
-            // if is a file, get the file hash or mtime
+            // if is a file, get the file hash mtime/md5
             $hashes[] = ($this->DIFFMODE == "mtime" ? stat($add)['mtime'] : md5_file($add));
           }
         }
@@ -269,7 +273,7 @@ class HotReloader {
    * Generates a unique hash of an entire directory
    *
    * Generates a hash/timestamp array of all files and folders inside the
-   * given directory, than transform this array in a unique string
+   * given directory, than transform this array in a unique md5 checksum
    *
    * @return String
   */    
@@ -292,7 +296,7 @@ class HotReloader {
       }
     }
     $dir->close();
-    return implode("",$files);
+    return md5(implode("",$files));
   }  
 
   /**
@@ -318,7 +322,7 @@ class HotReloader {
         }
       }
     }
-    // everything has failed
+    // if the file will not be ignored
     return false;
   } 
 
