@@ -125,7 +125,26 @@ $reloader->init();
 
 # The set() shortcut method
 
-The set method can be used as a configuration shortcut to initialize the hotRealoder.
+The set method can be used as a configuration shortcut to initialize the hotRealoder. Call the set(Array $options) and the options before init() the reloader. Here an example of configuration with set() shorticut method:
+
+```php
+require "../hotreloader.php";
+$reloader = new HotReloader();
+$reloader->set([
+	"ROOT" => __DIR__,
+	"DIFFMODE" => 'md5',
+	"WATCHMODE" => 'auto',
+	"IGNORE" => [
+		"filetoignore.js",
+		"folder/to/ignore"
+	],
+	"ADDED" => [
+		"filetoadd.js",
+		"folder/to/add"
+	],
+]);
+$reloader->init();
+```
 
 # How it Works
 
