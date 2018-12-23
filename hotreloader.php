@@ -144,14 +144,90 @@ class HotReloader {
    * @return void
    */
   public function currentConfig(){
-    return [
-      "STATEHASH" => $this->createStateHash(),
-      "ROOT"      => $this->ROOT,
-      "DIFFMODE"  => $this->DIFFMODE,
-      "WATCHMODE" => $this->DIFFMODE,
-      "IGNORING"  => $this->IGNORE,
-      "ADDED"     => $this->ADDED,
-    ];
+    $b      = "\n";
+    $ignore = [];
+    $added  = [];
+    foreach($this->IGNORE as $ign){
+      $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+      $ign = $this->ROOT.$DS.$ign;
+      $ignore[] = $ign ." ".(file_exists($ign) || is_dir($ign) ? "(OK)" : "(NOT FOUND)");;
+    }
+    foreach($this->ADDED as $add){
+      $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+      $add = $this->ROOT.$DS.$add;
+      $added[] = $add ." ".(file_exists($add) || is_dir($add) ? "(OK)" : "(NOT FOUND)");
+    }
+    // build the output from backend
+    $out = "$b$b"
+      // title
+      . "-------------------------------$b"
+      . "### HOT RELOADER CONFIG BEGIN:$b$b"
+      // root path
+      . "# ROOT PATH ("
+      . (is_dir($this->ROOT) ? "OK" : "ERROR: Path not Found")
+      .  "):$b" . $this->ROOT
+      . "$b$b"
+      // diff mode
+      . "# DIFF MODE:$b"
+      . $this->DIFFMODE
+      . "$b$b"
+      // watch mode
+      . "# WATCH MODE:$b"
+      . $this->WATCHMODE
+      . "$b$b"
+      // ignore
+      . "# IGNORE SET:$b"
+      . (!empty($ignore) ? implode($b, $ignore) : "$b$b" )
+      . "$b$b"
+      // added
+      . "# ADDED SET:$b"
+      . (!empty($added) ? implode($b, $added) : "$b$b" )
+      // includes and requires
+      . "# INCLUDES AND REQUIRES:$b"
+      . (!empty(get_included_files()) ? implode($b, get_included_files()) : "$b$b" ); 
+    // print the created $out
+    echo "<script>console.log(`$out`);</script>";
+    // build the output from front end
+    echo "<script>"
+      . "(function(){"
+      . "var scripts = document.getElementsByTagName('script');"
+      . "console.log('');"
+      . "console.log('# TRACKED SCRIPTS:');"
+      . "for (var i = 0; i < scripts.length; i++) {"
+      . "if(scripts[i].getAttribute('src') !== null && scripts[i].getAttribute('hidden') == null) console.log(scripts[i].getAttribute('src'));"
+      . "};"
+      . "})();"
+      // print ignored script tags
+      . "(function(){"
+      . "var scripts = document.getElementsByTagName('script');"
+      . "console.log('');"
+      . "console.log('# IGNORED SCRIPTS:');"
+      . "for (var i = 0; i < scripts.length; i++) {"
+      . "if(scripts[i].getAttribute('src') !== null && scripts[i].getAttribute('hidden') != null) console.log(scripts[i].getAttribute('src'));"
+      . "};"
+      . "})();"
+      // print the link tags
+      . "(function(){"
+      . "var links = document.getElementsByTagName('link');"
+      . "console.log('');"
+      . "console.log('# TRACKED LINKS:');"
+      . "for (var i = 0; i < links.length; i++) {"
+      . "if(links[i].getAttribute('href') !== null && links[i].getAttribute('hidden') == null) console.log(links[i].getAttribute('href'));"
+      . "};"
+      . "})();"
+      // print ignored link tags
+      . "(function(){"
+      . "var links = document.getElementsByTagName('link');"
+      . "console.log('');"
+      . "console.log('# IGNORED LINKS:');"
+      . "for (var i = 0; i < links.length; i++) {"
+      . "if(links[i].getAttribute('href') !== null && links[i].getAttribute('hidden') != null) console.log(links[i].getAttribute('href'));"
+      . "};"
+      . "})();"
+      . "</script>";
+    // finish
+    echo "<script>console.log(''); console.log('### HOT RELOADER CONFIG END');</script>";
+    echo "<script>console.log('-------------------------------'); </script>";
   }
 
   /**
