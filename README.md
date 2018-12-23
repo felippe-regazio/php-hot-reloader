@@ -125,7 +125,7 @@ $reloader->init();
 
 # The set() shortcut method
 
-The set method can be used as a configuration shortcut to initialize the hotReloader. Call the set(Array $options) and the options before init() the reloader. Here an example of configuration with set() shorticut method:
+The set method can be used as a configuration shortcut to initialize the hotReloader. Call the set(Array $options) before init the reloader. Here an example of configuration with set() shortcut method:
 
 ```php
 require "../hotreloader.php";
