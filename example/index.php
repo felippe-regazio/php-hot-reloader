@@ -25,7 +25,6 @@
 	$reloader->ignore([
 		"ignored.php"
 	]);
-	$reloader->currentConfig();
 	$reloader->init();
 ?>
 </html>
