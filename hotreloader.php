@@ -162,6 +162,10 @@ class HotReloader {
       // title
       . "-------------------------------$b"
       . "### HOT RELOADER CONFIG BEGIN:$b$b"
+      // applicatoin hash
+      . "# APPLICATION STATE HASH:$b"
+      . $this->createStateHash()
+      . $b.$b
       // root path
       . "# ROOT PATH ("
       . (is_dir($this->ROOT) ? "OK" : "ERROR: Path not Found")
