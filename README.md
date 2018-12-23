@@ -112,7 +112,7 @@ $reloader->setDiffMode('md5');
 $reloader->init();
 ```
 
-# Debuging and Checking the Reloader Behavior
+# Debuging and Checking Config
 
 Use the current config to see a resume of your Php Hot Reloader on your browser console. This function is to information and debug purposes only. Tip: You can you currentConfig() method without init() the Reloader.
 
