@@ -329,7 +329,7 @@ class HotReloader {
   } 
 
   /**
-   * Add the Live.js script to the current page
+   * Add the modified Live.js script to the current page
    *
    * This javascript code will add the live.js script to the page with
    * several modifications. This script will watch the page headers, scripts
