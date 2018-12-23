@@ -16,7 +16,7 @@ $reloader = new HotReloader();
 $reloader->init();
 ```
 
-In the example above, the Php Hot Reloader will watch all included/required files, scripts and link tags related to your current page. If there is any change, the page will reload, or the changes will be dinamically added (in css files for example). Anyway, the Reloader accepts many options as ignore or add files to the watcher, change the watch or diff mode, etc.
+By default, the Php Hot Reloader will watch all included/required files, scripts and link tags related to your current page. If there is any change, the page will reload, or the changes will be dinamically added (in css files for example). Anyway, the Reloader accepts many options as ignore or add files to the watcher, change the watch or diff mode, etc.
 
 # Setting the Root Path
 
