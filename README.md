@@ -112,6 +112,21 @@ $reloader->setDiffMode('md5');
 $reloader->init();
 ```
 
+# The currentConfig() method
+
+Use the current config to see a resume of your Php Hot Reloader on your browser console. This function is to information and debug purposes only. Tip: You can you currentConfig() method without init() the Reloader.
+
+```php
+require "../hotreloader.php";
+$reloader = new HotReloader();
+$reloader->currentConfig();
+$reloader->init();
+```
+
+# The set() shortcut method
+
+The set method can be used as a configuration shortcut to initialize the hotRealoder.
+
 # How it Works
 
 This class is divided in two parts: PHP and the Javascript part. The php part will build a list of all files related to your current code (which calls the reloader) and use the datetime or md5_file to create a unique application checksum, this will be the current state of your code. This class adds this checksum (hash) on the headers Etag field of every request. The javascript part keep watching your application headers, scripts and link tags every 1 sec. When something has changed (the etag checksum or any tag related file), the JS will perceive the diff and will reload the page. Of course, many features are included like the ignore lists, watcher increment, error handling, etc. To know more about, please read the source code self documentation on hotreloader.php file.
