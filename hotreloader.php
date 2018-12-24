@@ -209,7 +209,7 @@ class HotReloader {
         output += "# Scripts watched by src: \n"+scripts.watching.join("\n")+"\n\n";
         output += "# Scripts ignored by src: \n"+scripts.ignoring.join("\n")+"\n\n";
         output += "# Links watched by href: \n"+links.watching.join("\n")+"\n\n";
-        output += "# Links ignored by href: \n"+links.ignoring.join("\n")+"\n\n";        
+        output += "# Links ignored by href: \n"+links.ignoring.join("\n")+"\n\n";
         console.log(output);
       })();
     </script>
