@@ -112,9 +112,9 @@ $reloader->setDiffMode('md5');
 $reloader->init();
 ```
 
-# Debuging and Checking Config
+# Debugging and Checking Config
 
-Use the current config to see a resume of your Php Hot Reloader on your browser console. This function is to information and debug purposes only. Tip: You can you currentConfig() method without init() the Reloader.
+Use the currentConfig() method to see a resume of your Php Hot Reloader current state and configuration. The information will be on your browser console.
 
 ```php
 require "../hotreloader.php";
@@ -125,7 +125,7 @@ $reloader->init();
 
 # The set() shortcut method
 
-The set method can be used as a configuration shortcut to initialize the hotReloader. Call the set(Array $options) before init the reloader. Here an example of configuration with set() shortcut method:
+The set method can be used a configuration array to the Reloader before initialize it. Its a shortcut to all the methods explained above. Here's an example of configuration with set() shortcut method:
 
 ```php
 require "../hotreloader.php";

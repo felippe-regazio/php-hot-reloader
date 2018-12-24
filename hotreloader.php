@@ -131,7 +131,7 @@ class HotReloader {
    */
   public function set(Array $options){
     foreach($options as $key => $val){
-      $this->$key = $val;
+     if(isset($this->$key)) $this->$key = $val;
     }
   }
 
@@ -144,9 +144,13 @@ class HotReloader {
    * @return void
    */
   public function currentConfig(){
-    $b      = "\n";
-    $ignore = [];
-    $added  = [];
+    $apphash   = $this->createStateHash();
+    $root      = is_dir($this->ROOT) ? $this->ROOT." (OK)" : $this->ROOT." (NOT FOUND)";
+    $watchmode = $this->WATCHMODE;
+    $diffmode  = $this->DIFFMODE;
+    $includes  = implode('\n', get_included_files());
+    $ignore    = [];
+    $added     = [];
     foreach($this->IGNORE as $ign){
       $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
       $ign = $this->ROOT.$DS.$ign;
@@ -157,81 +161,59 @@ class HotReloader {
       $add = $this->ROOT.$DS.$add;
       $added[] = $add ." ".(file_exists($add) || is_dir($add) ? "(OK)" : "(NOT FOUND)");
     }
-    // build the output from backend
-    $out = "$b$b"
-      // title
-      . "-------------------------------$b"
-      . "### HOT RELOADER CONFIG BEGIN:$b$b"
-      // applicatoin hash
-      . "# APPLICATION STATE HASH:$b"
-      . $this->createStateHash()
-      . $b.$b
-      // root path
-      . "# ROOT PATH ("
-      . (is_dir($this->ROOT) ? "OK" : "ERROR: Path not Found")
-      .  "):$b" . $this->ROOT
-      . "$b$b"
-      // diff mode
-      . "# DIFF MODE:$b"
-      . $this->DIFFMODE
-      . "$b$b"
-      // watch mode
-      . "# WATCH MODE:$b"
-      . $this->WATCHMODE
-      . "$b$b"
-      // ignore
-      . "# IGNORE SET:$b"
-      . (!empty($ignore) ? implode($b, $ignore) : "$b$b" )
-      . "$b$b"
-      // added
-      . "# ADDED SET:$b"
-      . (!empty($added) ? implode($b, $added) : "$b$b" )
-      // includes and requires
-      . "# INCLUDES AND REQUIRES:$b"
-      . (!empty(get_included_files()) ? implode($b, get_included_files()) : "$b$b" ); 
-    // print the created $out
-    echo "<script>console.log(`$out`);</script>";
-    // build the output from front end
-    echo "<script>"
-      . "(function(){"
-      . "var scripts = document.getElementsByTagName('script');"
-      . "console.log('');"
-      . "console.log('# TRACKED SCRIPTS:');"
-      . "for (var i = 0; i < scripts.length; i++) {"
-      . "if(scripts[i].getAttribute('src') !== null && scripts[i].getAttribute('hidden') == null) console.log(scripts[i].getAttribute('src'));"
-      . "};"
-      . "})();"
-      // print ignored script tags
-      . "(function(){"
-      . "var scripts = document.getElementsByTagName('script');"
-      . "console.log('');"
-      . "console.log('# IGNORED SCRIPTS:');"
-      . "for (var i = 0; i < scripts.length; i++) {"
-      . "if(scripts[i].getAttribute('src') !== null && scripts[i].getAttribute('hidden') != null) console.log(scripts[i].getAttribute('src'));"
-      . "};"
-      . "})();"
-      // print the link tags
-      . "(function(){"
-      . "var links = document.getElementsByTagName('link');"
-      . "console.log('');"
-      . "console.log('# TRACKED LINKS:');"
-      . "for (var i = 0; i < links.length; i++) {"
-      . "if(links[i].getAttribute('href') !== null && links[i].getAttribute('hidden') == null) console.log(links[i].getAttribute('href'));"
-      . "};"
-      . "})();"
-      // print ignored link tags
-      . "(function(){"
-      . "var links = document.getElementsByTagName('link');"
-      . "console.log('');"
-      . "console.log('# IGNORED LINKS:');"
-      . "for (var i = 0; i < links.length; i++) {"
-      . "if(links[i].getAttribute('href') !== null && links[i].getAttribute('hidden') != null) console.log(links[i].getAttribute('href'));"
-      . "};"
-      . "})();"
-      . "</script>";
-    // finish
-    echo "<script>console.log(''); console.log('### HOT RELOADER CONFIG END');</script>";
-    echo "<script>console.log('-------------------------------'); </script>";
+    $ignore = implode( '\n', array_filter(array_unique($ignore)) );
+    $added  = implode( '\n', array_filter(array_unique($added)) );
+    //
+    ob_start();?>
+    <script>
+      (function(){
+        // get the front end information
+        var scripts = {
+          list:document.getElementsByTagName("script"),
+          watching:[],
+          ignoring:[]
+        }
+        var links = {
+          list:document.getElementsByTagName("link"),
+          watching:[],
+          ignoring:[]
+        }
+        // get the scripts and links watching info
+        for (var i = 0; i < scripts.list.length; i++) {
+          if(!scripts.list[i].getAttribute('src')) continue;
+          if(!scripts.list[i].hidden){
+            scripts.watching.push(scripts.list[i].src)
+          } else {
+            scripts.ignoring.push(scripts.list[i].src)
+          }
+        }
+        for (var i = 0; i < links.list.length; i++) {
+          if(!links.list[i].getAttribute('href')) continue;
+          if(!links.list[i].hidden){
+            links.watching.push(links.list[i].href)
+          } else {
+            links.ignoring.push(links.list[i].href)
+          }
+        }
+        // print the output with information from the backend
+        // and from the front end matters
+        var output = "\n";
+        output += "Hot Reloader Current State:\n\n"
+        output += "# Application Hash: \n<?=$apphash?>\n\n";
+        output += "# Root: \n<?=$root?>\n\n";
+        output += "# Watch Mode: \n<?=$watchmode?>\n\n";
+        output += "# Diff Mode: \n<?=$diffmode?>\n\n";
+        output += "# Included/Required: \n<?=$includes?>\n\n";
+        output += "# Ignoring: \n<?=$ignore?>\n\n";
+        output += "# Added: \n<?=$added?>\n\n";
+        output += "# Scripts watched by src: \n"+scripts.watching.join("\n")+"\n\n";
+        output += "# Scripts ignored by src: \n"+scripts.ignoring.join("\n")+"\n\n";
+        output += "# Links watched by href: \n"+links.watching.join("\n")+"\n\n";
+        output += "# Links ignored by href: \n"+links.ignoring.join("\n")+"\n\n";        
+        console.log(output);
+      })();
+    </script>
+    <?php echo ob_get_clean();
   }
 
   /**
