@@ -167,7 +167,7 @@ class HotReloader {
     ob_start();?>
     <script>
       (function(){
-        // get the front end information
+        // start to get the front end information
         var scripts = {
           list:document.getElementsByTagName("script"),
           watching:[],
@@ -180,7 +180,7 @@ class HotReloader {
         }
         // get the scripts and links watching info
         for (var i = 0; i < scripts.list.length; i++) {
-          if(!scripts.list[i].getAttribute('src')) continue;
+          if(!scripts.list[i].getAttribute("src")) continue;
           if(!scripts.list[i].hidden){
             scripts.watching.push(scripts.list[i].src)
           } else {
@@ -188,7 +188,7 @@ class HotReloader {
           }
         }
         for (var i = 0; i < links.list.length; i++) {
-          if(!links.list[i].getAttribute('href')) continue;
+          if(!links.list[i].getAttribute("href")) continue;
           if(!links.list[i].hidden){
             links.watching.push(links.list[i].href)
           } else {
