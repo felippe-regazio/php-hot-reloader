@@ -206,10 +206,10 @@ class HotReloader {
         output += "# Included/Required: \n<?=$includes?>\n\n";
         output += "# Ignoring: \n<?=$ignore?>\n\n";
         output += "# Added: \n<?=$added?>\n\n";
-        output += "# Scripts watched by src: \n"+scripts.watching.join("\n")+"\n\n";
-        output += "# Scripts ignored by src: \n"+scripts.ignoring.join("\n")+"\n\n";
-        output += "# Links watched by href: \n"+links.watching.join("\n")+"\n\n";
-        output += "# Links ignored by href: \n"+links.ignoring.join("\n")+"\n\n";
+        output += "# Scripts watched (src): \n"+scripts.watching.join("\n")+"\n\n";
+        output += "# Scripts ignored (src): \n"+scripts.ignoring.join("\n")+"\n\n";
+        output += "# Links watched (href): \n"+links.watching.join("\n")+"\n\n";
+        output += "# Links ignored (href): \n"+links.ignoring.join("\n")+"\n\n";
         console.log(output);
       })();
     </script>
