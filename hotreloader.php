@@ -655,7 +655,7 @@ class HotReloader {
           window.liveJsLoaded = true;
         }
         else if (window.console)
-          console.log("Php Hot Reloader with Live.js doesn't support the file protocol. It needs http.");    
+          console.log("Php Hot Reloader: Live.js doesn't support the file protocol. It needs http.");    
       })();
       </script>
     <!-- END AND PRINT OF LIVE.JS -->
