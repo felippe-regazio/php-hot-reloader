@@ -62,7 +62,7 @@ class HotReloader {
   /**
    * Set Watch Mode
    *
-   * Set what things will be whatched by the reloader. 
+   * Set what things will be whatched by the reloader.
    * It haves 4 modes:
    *
    * 1. "auto" - will react to changes in included/required files
@@ -82,6 +82,10 @@ class HotReloader {
    * @return void
    */
   public function setWatchMode(String $mode){
+    $valid_modes = "auto, includes, added, tags";
+    if(!in_array($mode, explode(", ", $valid_modes))){
+      $mode .= " (Not a Valid Mode. You can use: $valid_modes)";
+    }
     $this->WATCHMODE = $mode;
   }
 
@@ -139,7 +143,8 @@ class HotReloader {
    * Current Config
    * 
    * This function prints relevant information about the reloader current
-   * configuration and state. Its to debug and information purposes only
+   * configuration and state. Its to debug and information purposes only.
+   * The information will be printed on the browser console via javascript
    * 
    * @return void
    */
@@ -228,6 +233,7 @@ class HotReloader {
    * @return void
    */
   public function init(){
+    // add the application state hash on the headers
     $this->addEtagOnHeader();
     // add the JS Watcher
     $this->addJsWatcher();
@@ -242,7 +248,7 @@ class HotReloader {
    *
    * @return void
   */    
-  function addEtagOnHeader(){
+  private function addEtagOnHeader(){
       $hash = $this->createStateHash();
       if( $hash ) header( "Etag: " . $hash ); return true;
       echo "Hot Reloader failed to generate Application State Hash";
@@ -415,7 +421,8 @@ class HotReloader {
             interval = 1000,
             loaded = false,
             phperror = false,
-            active = { "html": 1, "js": 1, "css": 1 };
+            active = { "html": 1, "js": 1, "css": 1 },
+            currentHeartBeat = undefined;
         var Live = {
           // performs a cycle per interval
           heartbeat: function () {      
@@ -424,7 +431,8 @@ class HotReloader {
               if (!loaded) Live.loadresources();
               Live.checkForChanges();
             }
-            setTimeout(Live.heartbeat, interval);
+            // if the checker is not active, activates it
+            if (!currentHeartBeat) setTimeout(Live.heartbeat, interval);
           },
           // loads all local css and js resources upon first activation
           loadresources: function () {
@@ -509,14 +517,15 @@ class HotReloader {
               this little section try to catch errors
               from the backend that could break the watcher
               before the page reloads. if the newInfo key has 
-              sended an Etag, Last-Modified and Content-Length 
+              sended and Etag, Last-Modified and Content-Length 
               are null, and the Content-Type = "text/html", this 
               Means a possible back end error on code, so we
               stop the reloadings a little and console the 
               possible error. Then, we will get the current page
               content with a xhr request and dinamically print its
               content on screen, overwriting the current one. 
-              This is an special situation of error code. 
+              This will output the error, if has one withou break
+              out script. This is an special situation of error. 
             */
             if(newInfo['Content-Type'] == 'text/html'){
               if(newInfo['Etag'] == null && newInfo['Last-Modified'] == null && newInfo['Content-Length'] == null){
@@ -568,14 +577,13 @@ class HotReloader {
           // act upon a changed url of certain content type
           refreshResource: function (url, type) {
             switch (type.toLowerCase()) {
-              // css files can be reloaded dynamically by replacing the link element                               
+              // css files can be reloaded dynamically by replacing the link element
               case "text/css":
                 var link = currentLinkElements[url],
                     html = document.body.parentNode,
                     head = link.parentNode,
                     next = link.nextSibling,
                     newLink = document.createElement("link");
-                html.className = html.className.replace(/\s*livejs\-loading/gi, '') + ' livejs-loading';
                 newLink.setAttribute("type", "text/css");
                 newLink.setAttribute("rel", "stylesheet");
                 newLink.setAttribute("href", url + "?now=" + new Date() * 1);
@@ -610,9 +618,6 @@ class HotReloader {
                 if (rules.length >= 0) {
                   oldLink.parentNode.removeChild(oldLink);
                   delete oldLinkElements[url];
-                  setTimeout(function () {
-                    html.className = html.className.replace(/\s*livejs\-loading/gi, '');
-                  }, 100);
                 }
               } catch (e) {
                 pending++;
@@ -650,7 +655,7 @@ class HotReloader {
           window.liveJsLoaded = true;
         }
         else if (window.console)
-          console.log("Live.js doesn't support the file protocol. It needs http.");    
+          console.log("Php Hot Reloader with Live.js doesn't support the file protocol. It needs http.");    
       })();
       </script>
     <!-- END AND PRINT OF LIVE.JS -->
