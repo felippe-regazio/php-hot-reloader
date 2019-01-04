@@ -18,6 +18,8 @@ $reloader->init();
 
 By default, the Php Hot Reloader will watch all included/required files, scripts and link tags related to your current page. If there is any change, the page will reload, or the changes will be dinamically added (in css files for example). Anyway, the Reloader accepts many options as ignore or add files to the watcher, change the watch or diff mode, etc.
 
+TIP: Open your browser, open the inspector, go to the "Network" tab, and mark the "disable cache" option. Now code with the inspector opened to have no cache on the current page.
+
 # Setting the Root Path
 
 If you intend to ignore or add new files to the watcher, its better start setting the Root Path. You can do it using the method setRoot() as showed below. All the paths passed to your HotReloader instance must be relative this Root Path. If you do not set any Root Path, the hotreloader.php file path you be used as default.
@@ -47,13 +49,9 @@ $reloader->init();
 
 In the above example, we setted the root as the path of current file, and added 2 files and a folder to be ignored. The paths in the ignore() array will be relative to the Root.
 
-WARNING: 
+WARNING: Its important to diferentiate the back end paths from the front end paths. The ignore() method is relative to the application front and back end, the way to referentiate the files and assets its different dependend on where your are, and how its running. So, lets assume you have a script tag in your application, and you want to ignore it. You must add its src content to the ignore() array. The same with the link href. You can add folder paths relative to src or hrefs contents to be ignored too.
 
-Its important to diferentiate the back end paths from the front end paths. The ignore() method is relative to the application front and back end, the way to referentiate the files and assets its different dependend on where your are, and how its running. So, lets assume you have a script tag in your application, and you want to ignore it. You must add its src content to the ignore() array. The same with the link href. You can add folder paths relative to src or hrefs contents to be ignored too.
-
-TIP: 
-
-However, the fastest way to ignore a script or link tag is simply add a "hidden" attribute on the tag. If you do that, the Reloader will not react to the changes on these files.
+TIP: However, the fastest way to ignore a script or link tag is simply add a "hidden" attribute on the tag. If you do that, the Reloader will not react to the changes on these files.
 
 # Adding new files or folders to the Watcher
 

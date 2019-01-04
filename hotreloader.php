@@ -154,7 +154,7 @@ class HotReloader {
     foreach($this->IGNORE as $ign){
       $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
       $ign = $this->ROOT.$DS.$ign;
-      $ignore[] = $ign ." ".(file_exists($ign) || is_dir($ign) ? "(OK)" : "(NOT FOUND)");;
+      $ignore[] = $ign ." ".(file_exists($ign) || is_dir($ign) ? "(OK)" : "(NOT FOUND)");
     }
     foreach($this->ADDED as $add){
       $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
