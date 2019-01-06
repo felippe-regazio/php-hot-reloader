@@ -157,4 +157,4 @@ This class uses the live.js script to handle the watching and page reloads. We m
 # License
 
 Both Php Hot Reloader and Live.js are under MIT license.
-See the LICENSE.txt file to know more.
+See the LICENSE.txt file to know more about.
