@@ -586,7 +586,7 @@ class HotReloader {
             xhr.open("HEAD", url, true);
             xhr.onreadystatechange = function () {
               // ignore the 404 requests
-              if(xhr.status == "404") return;
+              if( xhr.readyState == 4 && xhr.status == "404") return;
               // if status != 404, proceed
               delete pendingRequests[url];
               if (xhr.readyState == 4 && xhr.status != 304) {
