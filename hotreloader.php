@@ -154,20 +154,8 @@ class HotReloader {
     $watchmode = $this->WATCHMODE;
     $diffmode  = $this->DIFFMODE;
     $includes  = implode('\n', get_included_files());
-    $ignore    = [];
-    $added     = [];
-    foreach($this->IGNORE as $ign){
-      $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
-      $ign = $this->ROOT.$DS.$ign;
-      $ignore[] = $ign ." ".(file_exists($ign) || is_dir($ign) ? "(OK)" : "(NOT FOUND)");
-    }
-    foreach($this->ADDED as $add){
-      $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
-      $add = $this->ROOT.$DS.$add;
-      $added[] = $add ." ".(file_exists($add) || is_dir($add) ? "(OK)" : "(NOT FOUND)");
-    }
-    $ignore = implode( '\n', array_filter(array_unique($ignore)) );
-    $added  = implode( '\n', array_filter(array_unique($added)) );
+    $ignore = implode( '\n', array_filter(array_unique($this->IGNORE)) );
+    $added  = implode( '\n', array_filter(array_unique($this->ADDED)) );
     //
     ob_start();?>
     <script>
@@ -209,8 +197,8 @@ class HotReloader {
         output += "# Watch Mode: \n<?=$watchmode?>\n\n";
         output += "# Diff Mode: \n<?=$diffmode?>\n\n";
         output += "# Included/Required: \n<?=$includes?>\n\n";
-        output += "# Ignoring: \n<?=$ignore?>\n\n";
-        output += "# Added: \n<?=$added?>\n\n";
+        output += "# Ignoring (relative to Root const): \n<?=$ignore?>\n\n";
+        output += "# Added (relative to Root const): \n<?=$added?>\n\n";
         output += "# Scripts watched (src): \n"+scripts.watching.join("\n")+"\n\n";
         output += "# Scripts ignored (src): \n"+scripts.ignoring.join("\n")+"\n\n";
         output += "# Links watched (href): \n"+links.watching.join("\n")+"\n\n";
