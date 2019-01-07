@@ -405,7 +405,6 @@ class HotReloader {
             resources = {},
             pendingRequests = {},
             currentLinkElements = {},
-            oldLinkElements = {},
             interval = 1000,
             loaded = false,
             phperror = false,
@@ -565,52 +564,19 @@ class HotReloader {
           // act upon a changed url of certain content type
           refreshResource: function (url, type) {
             switch (type.toLowerCase()) {
-              // css files can be reloaded dynamically by replacing the link element
+              // css files can be reloaded dynamically by adding a hash on its href
               case "text/css":
-                var link = currentLinkElements[url],
-                    html = document.body.parentNode,
-                    head = link.parentNode,
-                    next = link.nextSibling,
-                    newLink = document.createElement("link");
-                newLink.setAttribute("type", "text/css");
-                newLink.setAttribute("rel", "stylesheet");
-                newLink.setAttribute("href", url + "?now=" + new Date() * 1);
-                next ? head.insertBefore(newLink, next) : head.appendChild(newLink);
-                currentLinkElements[url] = newLink;
-                oldLinkElements[url] = link;
-                // schedule removal of the old link
-                Live.removeoldLinkElements();
+                var link = currentLinkElements[url].setAttribute("href", url + "?now=" + new Date() * 1);
                 break;
               // check if an html resource is our current url, then reload                               
               case "text/html":
                 if (url != document.location.href)
                   return;
-                // local javascript changes cause a reload as well
+              // local javascript changes cause a reload as well
               case "text/javascript":
               case "application/javascript":
               case "application/x-javascript":
                 document.location.reload();
-            }
-          },
-          // removes the old stylesheet rules only once the new one has finished loading
-          removeoldLinkElements: function () {
-            var pending = 0;
-            for (var url in oldLinkElements) {
-              // if this sheet has any cssRules, delete the old link
-              try {
-                var link = currentLinkElements[url],
-                    oldLink = oldLinkElements[url],
-                    html = document.body.parentNode,
-                    sheet = link.sheet || link.styleSheet,
-                    rules = sheet.rules || sheet.cssRules;
-                if (rules.length >= 0) {
-                  oldLink.parentNode.removeChild(oldLink);
-                  delete oldLinkElements[url];
-                }
-              } catch (e) {
-                pending++;
-              }
-              if (pending) setTimeout(Live.removeoldLinkElements, 50);
             }
           },
           // performs a HEAD request and passes the header info to the given callback
