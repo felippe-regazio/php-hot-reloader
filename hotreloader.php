@@ -40,7 +40,7 @@ class HotReloader {
    * @param String
    * @return void
   */  
-  public function setRoot(String $root){
+  public function setRoot($root){
     $this->ROOT = $root;
   }  
 
@@ -55,7 +55,7 @@ class HotReloader {
    * @param String
    * @return void
   */
-  public function setDiffMode(String $mode){
+  public function setDiffMode($mode){
     $this->DIFFMODE = $mode;
   }
 
@@ -81,7 +81,7 @@ class HotReloader {
    * @param String
    * @return void
    */
-  public function setWatchMode(String $mode){
+  public function setWatchMode($mode){
     $valid_modes = "auto, includes, added, tags";
     if(!in_array($mode, explode(", ", $valid_modes))){
       $mode .= " (Not a Valid Mode. You can use: $valid_modes)";
@@ -98,7 +98,7 @@ class HotReloader {
    * @param Array
    * @return void
    */
-  public function ignore(Array $array){
+  public function ignore($array){
     $this->IGNORE = array_filter(array_unique($array));
   }
 
@@ -114,7 +114,7 @@ class HotReloader {
    * @param Array
    * @return void
    */
-  public function add(Array $array){
+  public function add($array){
     $this->ADDED = array_filter(array_unique($array));
   }  
 
@@ -133,7 +133,7 @@ class HotReloader {
    * @param Array
    * @return void
    */
-  public function set(Array $options){
+  public function set($options){
     foreach($options as $key => $val){
      if(isset($this->$key)) $this->$key = $val;
     }
@@ -377,7 +377,7 @@ class HotReloader {
    *
    * @return Boolean
   */
-  private function willBeIgnored(String $file){
+  private function willBeIgnored($file){
     // if the ignore list is not empty
     if( !empty(array_filter($this->IGNORE)) ){
       // check if the file passed existis on the array
