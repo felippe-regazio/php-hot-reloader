@@ -2,7 +2,7 @@
 
 This class adds a live reload feature to any php project. It allows you to see your page dinamically changing while coding, without have to keep refreshing the browser on every change. By default, the script will turn your project tab reactive to changes in included/required files, css and js files releated to the tab opened. Every browser, every project, one single file.
 
-Php Hot Reloader is written by Felippe Regazio and wrapps the live.js script with several modifications.
+Php Hot Reloader is written by Felippe Regazio, and its JS Watcher is based on Live.js.
 The Original Live.js was written by Martin Kool (http://livejs.com/).
 
 # Usage
@@ -152,7 +152,7 @@ This class is divided in two parts: PHP and the Javascript part. The php part wi
 
 # Live.js
 
-This class uses the live.js script to handle the watching and page reloads. We modified it a lot, but its of course really fair to give the proper credits. Its really an awesome and simple script. To know more: http://livejs.com/.
+This class a JS Watcher based on Live.js to handle the watchings and page reloads. We modified the original script a lot, but its of course really fair to give the proper credits. Its really an awesome and simple script, Thx Martin! About Live.js: http://livejs.com/.
 
 # License
 
