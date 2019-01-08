@@ -5,7 +5,7 @@
  * Live.js : Copyright (C) 2011 by Martin Kool and Q42
  *
  * Licensed under The MIT License
- * Site: https://github.com/felippe-regazio/php-hot-reload
+ * Site: https://github.com/felippe-regazio/php-hot-reloader
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
