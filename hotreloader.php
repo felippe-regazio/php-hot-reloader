@@ -1,8 +1,8 @@
 <?php
 /**
  * HotReloader : Php Hot Reload - Simple live reload feature in a single file
- * HotReload : Copyright (C) 2018 by Felippe Regazio
- * Live.js : Copyright (C) 2011 by Martin Kool and Q42
+ * HotReloader : Copyright (C) 2018 by Felippe Regazio
+ * HotReloader Watcher derives from Live.js by Martin Kool and Q42
  *
  * Licensed under The MIT License
  * Site: https://github.com/felippe-regazio/php-hot-reloader
@@ -387,10 +387,11 @@ class HotReloader {
   /**
    * Add the modified Live.js script to the current page
    *
-   * This javascript code will add the live.js script to the page with
-   * several modifications. This script will watch the page headers, scripts
-   * and links, based on the Reloader configuration. When a change is catched
-   * a page reload will be triggered or the changes will be directly applied.
+   * This is the HotReloader JS Watcher. This script derives from live.js, due
+   * several modifications it turned into another script already. This script 
+   * will watch the page headers, scripts and links, based on the Reloader 
+   * configuration. When a change is catched a page reload will be triggered 
+   * or the changes will be directly applied.
    *
    * @return void
   */
