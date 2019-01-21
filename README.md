@@ -1,6 +1,6 @@
 # PHP Hot Reloader
 
-This class adds a live reload feature to any php project. It allows you to see your page dinamically changing while coding, without have to keep refreshing the browser on every change. By default, the script will turn your project tab reactive to changes in included/required files, css and js files releated to the tab opened. Every browser, every project, one single file.
+This class adds a live reload feature to any php project. It allows you to see your page dynamically changing while coding, without have to keep refreshing the browser on every change. By default, the script will turn your project tab reactive to changes in included/required files, css and js files related to the tab opened. Every browser, every project, one single file.
 
 Php Hot Reloader is written by Felippe Regazio. The Reloader JS Watcher is based on Live.js.
 The Original Live.js was written by Martin Kool (http://livejs.com/).
@@ -18,7 +18,7 @@ $reloader = new HotReloader();
 $reloader->init();
 ```
 
-By default, the Php Hot Reloader will watch all included/required files, scripts and link tags related to your current page. If there is any change, the page will reload, or the changes will be dinamically added (in css files for example). Anyway, the Reloader accepts many options as ignore or add files to the watcher, change the watch or diff mode, etc.
+By default, the Php Hot Reloader will watch all included/required files, scripts and link tags related to your current page. If there is any change, the page will reload, or the changes will be dynamically added (in css files for example). Anyway, the Reloader accepts many options as ignore or add files to the watcher, change the watch or diff mode, etc.
 
 TIP: Open your browser, open the inspector, go to the "Network" tab, and mark the "disable cache" option. Now code with the inspector opened to have no cache on the current page.
 
