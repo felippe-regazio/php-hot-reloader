@@ -35,7 +35,7 @@ $reloader->init();
 
 # Ignoring files or directories
 
-By default, the Reloader reacts to any change on included/required files and script/links src/href tags. But its possible to unwatch expecific files or directories. So, changes in these unwatched files will not trigger a page reload. To ignore a file or a folder, use the ignore() method.
+By default, the Reloader reacts to any change on included/required files and script/links src/href tags. But its possible to unwatch specific files or directories. So, changes in these unwatched files will not trigger a page reload. To ignore a file or a folder, use the ignore() method.
 
 ```php
 require "../hotreloader.php";
@@ -49,9 +49,9 @@ $reloader->ignore([
 $reloader->init();
 ```
 
-In the above example, we setted the root as the path of current file, and added 2 files and a folder to be ignored. The paths in the ignore() array will be relative to the Root.
+In the above example, we set the root as the path of current file, and added 2 files and a folder to be ignored. The paths in the ignore() array will be relative to the Root.
 
-WARNING: Its important to diferentiate the back end paths from the front end paths. The ignore() method is relative to the application front and back end, the way to referentiate the files and assets its different dependend on where your are, and how its running. So, lets assume you have a script tag in your application, and you want to ignore it. You must add its src content to the ignore() array. The same with the link href. You can add folder paths relative to src or hrefs contents to be ignored too.
+WARNING: Its important to differentiate the back end paths from the front end paths. The ignore() method is relative to the application front and back end, the way to pass the paths of files and assets will be different depending on you are, and how its running. So, lets assume you have a script tag in your application, and you want to ignore it. You must add its src content to the ignore() array. The same with the link href. You can add folder paths relative to src or hrefs contents to be ignored too.
 
 TIP: However, the fastest way to ignore a script or link tag is simply add a "hidden" attribute on the tag. If you do that, the Reloader will not react to the changes on these files.
 
@@ -59,7 +59,7 @@ TIP: However, the fastest way to ignore a script or link tag is simply add a "hi
 
 If you have files that are not included or directly related to your code, but you'd like them to autoreload your page, you can use the add() method. You can add new files or folders to the add() array, and they will trigger a page reload when changed. The path rules are same as the ignore() method.
 
-If you have a folder or file in the add() array and the same on the ignore() array, the file will be ignored as well. Directories are recursivelly added, so changing in files on the subdirs are relevant too.
+If you have a folder or file in the add() array and the same on the ignore() array, the file will be ignored as well. Directories are recursively added, so changing in files on the subdirs are relevant too.
 
 
 ```php
@@ -78,11 +78,11 @@ $reloader->init();
 
 You can choice a set of things to watch. To do it, use the setWatchMode(String $mode) method. The $mode can be:
 
-1. 'auto' : is the default mode. In this mode the reloader reacts to modifications on the current page, its included/required/ files and its srcript/link tags.
+1. 'auto' : is the default mode. In this mode the reloader reacts to modifications on the current page, its included/required/ files and its script/link tags.
 
 2. 'includes' : set the reloader to react only to the page code and its included/required files.
 
-3. 'added' : set the reloader to react only to the files and directories setted on the add() method array.
+3. 'added' : set the reloader to react only to the files and directories set on the add() method array.
 
 4. 'tags' : set the reloader to react only to the script and link tags on the html code.
 
@@ -100,7 +100,7 @@ $reloader->init();
 
 # Changing the Reloader Diff Behavior
 
-By default, the PHP Hot Reloader will create a list of all files related to your code, or added via add(), remove those setted via ignore(), and create a list of modified date/time of each file. This list will be hashed with md5 to create your application fingerprint. a unique checksum of the files state. When this fingerprint changes, it means that the page must be reloaded because something has changed.
+By default, the PHP Hot Reloader will create a list of all files related to your code, or added via add(), remove those set via ignore(), and create a list of modified date/time of each file. This list will be hashed with md5 to create your application fingerprint. a unique checksum of the files state. When this fingerprint changes, it means that the page must be reloaded because something has changed.
 
 You can change the way this list is created with the setDiffMode(String $mode) method. The $mode can be 'mtime', which is the default, or 'md5'. In the md5 mode, all files will be hashed using md5 insted modification date/time.
 
