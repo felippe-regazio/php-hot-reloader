@@ -15,17 +15,17 @@
 	<!-- note that ignored.js has the hidden attr,
 	so will be ignore by reloader -->
 	<script src="ignored.js" type="text/javascript" hidden></script>
+	<!-- Here we start the reloader, read the
+		REAMDE.ms for further details -->
+	<?php
+		require "../hotreloader.php";
+		$reloader = new HotReloader();
+		$reloader->setRoot(__DIR__);
+		$reloader->ignore([
+			"ignored.php"
+		]);
+		$reloader->currentConfig();
+		$reloader->init();
+	?>
 </body>
-<!-- Here we start the reloader, read the
-	REAMDE.ms for further details -->
-<?php
-	require "../hotreloader.php";
-	$reloader = new HotReloader();
-	$reloader->setRoot(__DIR__);
-	$reloader->ignore([
-		"ignored.php"
-	]);
-	$reloader->currentConfig();
-	$reloader->init();
-?>
 </html>

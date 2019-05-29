@@ -222,7 +222,9 @@ class HotReloader {
    */
   public function init(){
     // add the application state hash on the headers
-    $this->addEtagOnHeader();
+    if(!headers_sent()) {
+      $this->addEtagOnHeader();
+    }
     // add the JS Watcher
     $this->addJsWatcher();
   }
@@ -517,12 +519,13 @@ class HotReloader {
             */
             if(newInfo['Content-Type'] == 'text/html'){
               if(newInfo['Etag'] == null && newInfo['Last-Modified'] == null && newInfo['Content-Length'] == null){
-                if(!phperror){
-                  console.error("Hot Reloader tracked a possible error on your back end code");
-                }
                 Live.getHTML( window.location.href, function (response) {
-                  if(document.documentElement.innerHTML != response.documentElement.innerHTML)
-                  document.documentElement.innerHTML = response.documentElement.innerHTML;
+                  if(document.documentElement.innerHTML != response.documentElement.innerHTML) {
+                    document.documentElement.innerHTML = response.documentElement.innerHTML;
+                    if(!phperror){
+                      console.error("Hot Reloader tracked a possible error on your back end code");
+                    }
+                  }
                 });
                 phperror = true;
               }
