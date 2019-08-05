@@ -1,4 +1,7 @@
 <?php
+
+namespace HotReloader;
+
 /**
  * HotReloader : Php Hot Reload - Simple live reload feature in a single file
  * HotReloader : Copyright (C) 2018 by Felippe Regazio

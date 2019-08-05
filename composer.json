@@ -1,0 +1,10 @@
+{
+    "name": "felippe-regazio/php-hot-reloader",
+    "description": "A class to add a complete live reload feature to any php project",
+    "type": "library",
+    "license": "MIT",
+    "require": {},
+    "autoload": {
+        "psr-4": {"HotReloader\\": "src/"}
+    }
+}
