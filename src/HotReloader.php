@@ -311,7 +311,7 @@ class HotReloader {
     if(!empty($this->ADDED)){
       foreach($this->ADDED as $add){
         // create the added path relative to the ROOT const
-        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == strlen($this->ROOT) ? DIRECTORY_SEPARATOR : "";
         $add = $this->ROOT.$DS.$add;
         // do the hash
         if(is_dir($add)){
@@ -377,7 +377,7 @@ class HotReloader {
       foreach( $this->IGNORE as $ignore ){
         // get the absolute path os files to be ignored
         // the files in IGNORE are relative to $this->ROOT
-        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == count($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == strlen($this->ROOT) ? DIRECTORY_SEPARATOR : "";
         $ignore = $this->ROOT.$DS.$ignore;
         //check if must ignore the file (is in ignore or in a folder which is)
         if($file == $ignore || strpos(dirname($file),$ignore) !== false && strpos(dirname($file),$ignore) == 0){
