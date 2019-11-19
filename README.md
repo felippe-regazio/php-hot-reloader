@@ -9,11 +9,12 @@ The Original Live.js was written by Martin Kool (http://livejs.com/).
 
 You must call the HotReloader on the sources you want to auto-react to changes. The reactions will happen on js, css, and other php files related to current page. You must have a layout file, common footer or something like this in your boilerplate. If dont, you'll need to put the HotReloader() in your code manually. The examples here must be putted on your footer section or somewhere after your \<body> tag.
 
-The simplest way to start is: require the class, instantiate it, call the init method.
+The simplest way to start is: require the class, call namespace, instantiate it, call the init method.
 Now, keep the page opened while coding, and just code.
 
 ```php
 require "../hotreloader.php";
+use HotReloader\HotReloader;
 $reloader = new HotReloader();
 $reloader->init();
 ```
@@ -28,6 +29,7 @@ If you intend to ignore or add new files to the watcher, its better start settin
 
 ```php
 require "../hotreloader.php";
+use HotReloader\HotReloader;
 $reloader = new HotReloader();
 $reloader->setRoot(__DIR__);
 $reloader->init();
@@ -39,6 +41,7 @@ By default, the Reloader reacts to any change on included/required files and scr
 
 ```php
 require "../hotreloader.php";
+use HotReloader\HotReloader;
 $reloader = new HotReloader();
 $reloader->setRoot(__DIR__);
 $reloader->ignore([
@@ -64,6 +67,7 @@ If you have a folder or file in the add() array and the same on the ignore() arr
 
 ```php
 require "../hotreloader.php";
+use HotReloader\HotReloader;
 $reloader = new HotReloader();
 $reloader->setRoot(__DIR__);
 $reloader->add([
@@ -90,6 +94,7 @@ In any mode, the html script/link tags will be relevant to the Reloader. If you 
 
 ```php
 require "../hotreloader.php";
+use HotReloader\HotReloader;
 $reloader = new HotReloader();
 $reloader->setRoot(__DIR__);
 $reloader->setWatchMode('includes');
@@ -106,6 +111,7 @@ You can change the way this list is created with the setDiffMode(String $mode) m
 
 ```php
 require "../hotreloader.php";
+use HotReloader\HotReloader;
 $reloader = new HotReloader();
 $reloader->setRoot(__DIR__);
 $reloader->setDiffMode('md5');
@@ -118,6 +124,7 @@ Use the currentConfig() method to see a resume of your Php Hot Reloader current 
 
 ```php
 require "../hotreloader.php";
+use HotReloader\HotReloader;
 $reloader = new HotReloader();
 $reloader->currentConfig();
 $reloader->init();
@@ -129,6 +136,7 @@ The set method can be used a configuration array to the Reloader before initiali
 
 ```php
 require "../hotreloader.php";
+use HotReloader\HotReloader;
 $reloader = new HotReloader();
 $reloader->set([
 	"ROOT" => __DIR__,
