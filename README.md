@@ -7,7 +7,7 @@ The Original Live.js was written by Martin Kool (http://livejs.com/).
 
 # Usage
 
-You must call the HotReloader on the sources you want to auto-react to changes. The reactions will happen on js, css, and other php files related to current page. You must have a layout file, common footer or something like this in your boilerplate. If dont, you'll need to put the HotReloader() in your code manually. The examples here must be putted on your footer section or somewhere after your \<body> tag.
+You must call the HotReloader on the sources you want to auto-react to changes. The reactions will happen on js, css, and other php files related to current page. You must have a layout file, common footer or something like this in your boilerplate. If dont, you'll need to put the HotReloader() in your code manually. The examples here must be put on your footer section or somewhere after your \<body> tag.
 
 The simplest way to start is: require the class, call namespace, instantiate it, call the init method.
 Now, keep the page opened while coding, and just code.
