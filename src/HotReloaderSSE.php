@@ -2,9 +2,10 @@
     
     namespace HotReloader;
 
+    header("Access-Control-Allow-Origin: *");
     header('Content-Type: text/event-stream');
     header('Cache-Control: no-cache');
-    header('Connection: keep-alive');   
+    header('Connection: keep-alive');
     
 	function send_message ($message) {
         echo "data: " . json_encode($message) . PHP_EOL;
@@ -15,7 +16,7 @@
     
     // --------------------------------------------
     
-    require './DiffChecker.php';
+    require __DIR__ . '/DiffChecker.php';
     
     $Differ = new HotReloaderDiffChecker();
     $app_hash = $Differ->hash();

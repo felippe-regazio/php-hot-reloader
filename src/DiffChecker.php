@@ -23,11 +23,11 @@ class HotReloaderDiffChecker {
    *
    * @return void
   */
-  function __construct () {
+  function __construct ($options = []) {
     $this->ROOT      = __DIR__; // the root of directories
     $this->DIFFMODE  = "md5";   // mtime/md5
-    $this->ADDED     = ["."];   // extra files to be watched
-    $this->IGNORE    = [];      // file or folders to ignore
+    $this->WATCH     = ["."];   // extra files to be watched
+    $this->IGNORE    = [''];    // file or folders to ignore
   }
 
   /**
@@ -41,8 +41,8 @@ class HotReloaderDiffChecker {
   private function hashAppFiles () {
     $hashes = [];
     // this will hash all files and folders in ADDED array
-    if(!empty($this->ADDED)){
-      foreach($this->ADDED as $add){
+    if(!empty($this->WATCH)){
+      foreach($this->WATCH as $add){
         // create the added path relative to the ROOT const
         $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == strlen($this->ROOT) ? DIRECTORY_SEPARATOR : "";
         $add = $this->ROOT.$DS.$add;
@@ -81,7 +81,7 @@ class HotReloaderDiffChecker {
     while (false !== ($file = $dir->read())){
       if ($file != '.' and $file != '..'){
         if (is_dir($directory . DIRECTORY_SEPARATOR . $file)){
-          $files[] = $this->hashDirectory($directory . DIRECTORY_SEPARATOR . $file, $mode);
+          $files[] = $this->hashDir($directory . DIRECTORY_SEPARATOR . $file, $mode);
         }
         else{
           $curr_file = $directory.DIRECTORY_SEPARATOR.$file;
