@@ -8,7 +8,7 @@ This Reloader uses a SSE approach (server-sent events) to listen to changes and 
 
 With composer:
 
-```
+```bash
 composer require felippe-regazio/php-hot-reloader
 ```
 
@@ -19,18 +19,20 @@ Clone the repo and copy its folder to somewhere on your project.
 # Configuring
 
 Copy the `phrwatcher.php` file on the reporitory root to somewhere on your app. This file must be available through some URL.
-Open this file and configure the $ variables in according to your needing. Please, read the comments on the vars to properly configure.  
+Open this file and configure the $ variables according to your needings. Please, read the comments on the vars to properly configure.  
 
-Now, lets imagine thats you have configured the phrwatcher.php and its enable through url on http://localhost/your-project/phrwatcher.php.
-Now, on your project you must activate the reloader like this:
+Now, lets imagine that you have configured the phrwatcher.php and its enable through url on http://localhost/your-project/phrwatcher.php.
+Now, you must activate the reloader by calling it on your application like this:
 
 ```php
-    require "src/HotReloader.php";
-    new HotReloader\HotReloader('//localhost/your-project/phrwatcher.php');
+require "src/HotReloader.php";
+new HotReloader\HotReloader('//localhost/your-project/phrwatcher.php');
 ```
 
 The `require` will not be necessary depending on your composer configuration.  
-The @param of the `HotReloader` function must be the URL that points to the `phrwatcher.php` without the protocol. 
+The @param of the `HotReloader` function must be the URL that points to the `phrwatcher.php` without the protocol.  
+
+Its nice to add the HotReloader()  call on some layout, bootstrap or some down level file on your application that enables it universally on your application. My this is just a suggestion, you scenary can be totally different. Anyway, thats all. Just code. 
 
 # Notes About V1
 
