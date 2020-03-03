@@ -19,7 +19,8 @@ Clone the repo and copy its folder to somewhere on your project.
 # Configuring
 
 Copy the `phrwatcher.php` file on the reporitory root to somewhere on your app. This file must be available through some URL.
-Open this file and configure the $ variables according to your needings. Please, read the comments on the vars to properly configure.  
+Open this file and configure the $ variables according to your needings. Please, read the comments on the vars to properly configure. 
+On this file you will just inform your app root, hot reloader root, files to watch and files to ignore. Thats all the configuration.
 
 Now, lets imagine that you have configured the phrwatcher.php and its enable through url on http://localhost/your-project/phrwatcher.php.
 Now, you must activate the reloader by calling it on your application like this:
