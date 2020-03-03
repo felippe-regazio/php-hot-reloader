@@ -11,7 +11,7 @@
 	<?php
 
 		require "src/HotReloader.php";
-		new HotReloader\HotReloader();
+		new HotReloader\HotReloader('//localhost/php-hot-reloader/phrwatcher.php');
 
 	?>
 </html>

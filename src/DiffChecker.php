@@ -26,7 +26,7 @@ class HotReloaderDiffChecker {
   function __construct ($options = []) {
     $this->ROOT      = __DIR__; // the root of directories
     $this->DIFFMODE  = "md5";   // mtime/md5
-    $this->WATCH     = ["."];   // extra files to be watched
+    $this->WATCH     = ["../"];   // extra files to be watched
     $this->IGNORE    = [''];    // file or folders to ignore
   }
 
@@ -138,8 +138,8 @@ class HotReloaderDiffChecker {
     // transform all hashes into a unique md5 checksum
     return md5(implode("",$hashes));
   }
-  
-  public function hash () {  
+
+  public function hash () {
     return $this->getAppStateHash();
   }
 }

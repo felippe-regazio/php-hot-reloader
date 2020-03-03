@@ -1,29 +1,38 @@
 <?php
-    
+
     namespace HotReloader;
 
     header("Access-Control-Allow-Origin: *");
     header('Content-Type: text/event-stream');
     header('Cache-Control: no-cache');
     header('Connection: keep-alive');
-    
+
 	function send_message ($message) {
         echo "data: " . json_encode($message) . PHP_EOL;
         echo PHP_EOL;
         ob_flush();
         flush();
     }
-    
-    // --------------------------------------------
-    
+
     require __DIR__ . '/DiffChecker.php';
-    
+
+    // --------------------------------------------
+
     $Differ = new HotReloaderDiffChecker();
-    $app_hash = $Differ->hash();
-    
+
+    $differ_cfg = [
+        'ROOT'     => $PROJECT_ROOT,
+        'WATCH'    => $WATCH,
+        'IGNORE'   => $IGNORE
+    ];
+
+    $app_hash = $Differ->hash($differ_cfg);
+
+    // --------------------------------------------
+
     while (true) {
 
-        $current_hash = $Differ->hash();
+        $current_hash = $Differ->hash($differ_cfg);
 
         if ($app_hash != $current_hash) {
             $app_hash = $current_hash;

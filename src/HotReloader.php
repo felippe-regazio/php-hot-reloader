@@ -4,7 +4,8 @@ namespace HotReloader;
 
 class HotReloader {
 
-    function __construct () { 
+    function __construct ($PHR_WATCHER) {
+        $this->PHR_WATCHER = $PHR_WATCHER;
         $this->init();
     }
 
@@ -17,7 +18,7 @@ class HotReloader {
             <script>
                 (function () {
 
-                    const EVENT_SOURCE_ENDPOINT = '//localhost/php-hot-reloader/src/HotReloaderSSE.php';
+                    const EVENT_SOURCE_ENDPOINT = '<?=$this->PHR_WATCHER?>?watch=true';
                     const ServerEvents = new EventSource(EVENT_SOURCE_ENDPOINT);
 
                     ServerEvents.addEventListener('message', e => {
@@ -32,7 +33,6 @@ class HotReloader {
                     // -------------------------------------
 
                     handleServerMessage = data => {
-                        // ex: {hash: "2f4880a48d97b9e4b80f350ea25c5615", action: "reload", conn_status: true, timestamp: "0.09070800 1582824410"}
                         if (data && data.action && data.action === "reload") {
                             window.location.reload();
                         }
