@@ -1,4 +1,4 @@
-# PHP Hot Reloader
+# PHP Hot Reloader V2
 
 This is a class that adds a live reload feature to any php project. It allows you to see your page dynamically changing while coding, without have to keep refreshing the browser on every change.  
 
