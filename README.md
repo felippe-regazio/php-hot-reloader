@@ -24,7 +24,7 @@ require_once "../php-hot-reloader/src/HotReloader.php";
 new HotReloader\HotReloader('//localhost/your-project/phrwatcher.php');
 ```
 
-So, you must pass the address that points to your `phrwatcher.php` file as the HotReloader() function param. Is highly recommended to start the HotReloader on some front controller on your app. Also you should deactivate the reloader on production, never keep this feature running on production.
+So, you must pass the address that points to your `phrwatcher.php` file as the HotReloader() function param. You dont need to add the protocol, just add "//" as URL prefix. Is highly recommended to start the HotReloader on some front controller on your app. Also you should deactivate the reloader on production, never keep this feature running on production.
 
 # Example
 
