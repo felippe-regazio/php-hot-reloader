@@ -6,8 +6,15 @@ This Reloader uses a SSE (server-sent events) to listen to changes and notify th
 
 # Installing
 
+### Using Composer
+
+```
+composer require felippe-regazio/php-hot-reloader:dev-master --prefer-source
+```
+
+### Manually
+
 Clone this repository and copy its folder to somewhere on your project.
-Im working to release this repository via composer.
 
 # Configuring
 
@@ -19,8 +26,10 @@ Im working to release this repository via composer.
 
 Now, lets imagine that you have configured your phrwatcher.php and its available through url on http://localhost/your-project/phrwatcher.php. Now, you must activate the reloader by calling it on your application like this:
 
+If you installed this repository using composer, you dont need the require_once below, just add the "autoloader" on your app and instantiate the class.
+
 ```php
-require_once "../php-hot-reloader/src/HotReloader.php";
+require_once "/php-hot-reloader/src/HotReloader.php";
 new HotReloader\HotReloader('//localhost/your-project/phrwatcher.php');
 ```
 
