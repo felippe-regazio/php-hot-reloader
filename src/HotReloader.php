@@ -6,13 +6,13 @@ namespace HotReloader;
  * HotReloader : Php Hot Reload - Simple live reload feature for PHP projects
  * HotReloader : Copyright (C) 2018 by Felippe Regazio
  * Licensed under The MIT License
- * Site: https://github.com/felippe-regazio/php-hot-reloader
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Felippe Regazio, and releated wrapped files
- * @version       1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @link       https://github.com/felippe-regazio/php-hot-reloader
+ * @copyright  Copyright (c) Felippe Regazio, and releated wrapped files
+ * @version    1.0.0
+ * @license    https://opensource.org/licenses/mit-license.php MIT License
  */
 class HotReloader {
 
@@ -23,15 +23,15 @@ class HotReloader {
      * @param $PHR_WATCHR {String} Url to the phrwatcher.php file
      * @return void
      */
-    function __construct ($PHR_WATCHER) {
-        $this->PHR_WATCHER = $PHR_WATCHER;
+    function __construct ($WATCHER_FILE_URL) {
+        $this->WATCHER_FILE_URL = $WATCHER_FILE_URL;
         $this->init();
     }
 
     /**
      * Public method that inits the Reloader. Useful to restart.
      * The init method adds the JS SSE client on the page.
-     * 
+     *
      * @param void
      * @return void
      */
@@ -40,9 +40,20 @@ class HotReloader {
     }
 
     /**
+     * Builds the watcher file url (phrwatcher.php by the docs), and
+     * add the proper parameters as GET query strings
+     *
+     * @param void
+     * @return URL {String} Url to phrwatcher.php file with params
+     */
+    private function getWatcherFileURL() {
+        return $this->WATCHER_FILE_URL . "?watch=true&reloader_root=" . dirname(__DIR__);
+    }
+
+    /**
      * Flush the JS SSE client to the page. This function is
      * why its better to starts the Reloader on the page footer.
-     * 
+     *
      * @param void
      * @return void
      */
@@ -51,7 +62,7 @@ class HotReloader {
             <script>
                 (function () {
 
-                    const EVENT_SOURCE_ENDPOINT = '<?=$this->PHR_WATCHER?>?watch=true';
+                    const EVENT_SOURCE_ENDPOINT = '<?=$this->getWatcherFileURL()?>';
                     const ServerEvents = new EventSource(EVENT_SOURCE_ENDPOINT);
 
                     ServerEvents.addEventListener('message', e => {

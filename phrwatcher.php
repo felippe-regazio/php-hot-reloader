@@ -22,15 +22,11 @@
 	 */
 	$ENABLED = true;
 
-	/**
-	 * This variable must contain the php-hot-reloader folder
-	 * absolute path with a trailing slash.
-	 */
-	$RELOADER_ROOT = __DIR__;
 
 	/**
 	 * This variable must contain your project root absolute
-	 * path with a trailing slash.
+	 * path with a trailing slash. The Watch and Ignore paths
+	 * will be relative to this one.
 	 */
 	$PROJECT_ROOT  = __DIR__;
 
@@ -55,7 +51,9 @@
 
 	];
 
-	// --------------------- Dont Edit It ---------------------
+	// ---------------------- Dont Edit It ----------------------
+
+	$RELOADER_ROOT = @$_REQUEST["reloader_root"];
 
 	if (!empty(@$_REQUEST['watch'])) {
 		if ($ENABLED) {

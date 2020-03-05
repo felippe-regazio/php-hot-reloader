@@ -6,13 +6,13 @@ namespace HotReloader;
  * HotReloader : Php Hot Reload - Simple live reload feature for PHP projects
  * HotReloader : Copyright (C) 2018 by Felippe Regazio
  * Licensed under The MIT License
- * Site: https://github.com/felippe-regazio/php-hot-reloader
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Felippe Regazio, and releated wrapped files
- * @version       1.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @link       https://github.com/felippe-regazio/php-hot-reloader
+ * @copyright  Copyright (c) Felippe Regazio, and releated wrapped files
+ * @version    1.0.0
+ * @license    https://opensource.org/licenses/mit-license.php MIT License
  */
 class HotReloaderDiffChecker {
 
@@ -31,7 +31,7 @@ class HotReloaderDiffChecker {
   /**
    * Generates a hash list of all files added to watch
    *
-   * @param void 
+   * @param void
    * @return Array
   */
   private function hashAppFiles () {
@@ -57,10 +57,10 @@ class HotReloaderDiffChecker {
   /**
    * Generates a unique hash for an entire directory
    *
-   * Generates a hash array of each file and folder inside the given 
+   * Generates a hash array of each file and folder inside the given
    * directory, than transform this array in a unique md5 checksum
    *
-   * @param $directory {String} Directory path 
+   * @param $directory {String} Directory path
    * @return String
   */
   private function hashDir ($directory) {
@@ -105,10 +105,10 @@ class HotReloaderDiffChecker {
   }
 
   /**
-   * Collects all the hashes generated for the app and transforms it into 
+   * Collects all the hashes generated for the app and transforms it into
    * a unique md5 hash. this unique hash is your app state fingerprint.
    *
-   * @param void 
+   * @param void
    * @return String
    */
   private function getAppStateHash () {
@@ -119,7 +119,7 @@ class HotReloaderDiffChecker {
 
   /**
    * Public API that returns the current app state hash
-   * 
+   *
    * @param void
    * @return $hash {String} The app hash
    */
