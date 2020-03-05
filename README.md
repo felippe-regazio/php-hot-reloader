@@ -18,7 +18,7 @@ Clone this repository and copy its folder to somewhere on your project.
 
 # Configuring
 
-1. Copy the `phrwatcher.php` file on the repository root to somewhere on your app. This file must be available through some URL (you can change its name if you prefer).
+1. Copy the `phrwatcher.php` file on the repository root to somewhere on your app. This file must be available through some URL (you can change its name if you prefer), and if you visit this file you must see the message "SSE_ADDRESS_OK".
 
 2. Open this file and configure the $variables according to your needings. Please, read the doc strings on the vars to properly configure them. Basically you will inform your app root, files to watch and files to ignore.
 

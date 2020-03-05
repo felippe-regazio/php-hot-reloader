@@ -83,7 +83,7 @@ class HotReloader {
                     }
 
                     handleServerError = error => {
-                        console.error(error);
+                        // console.error(error);
                     }
 
                 })();
