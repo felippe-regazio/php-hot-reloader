@@ -6,8 +6,6 @@ This Reloader uses a SSE (server-sent events) to listen to changes and notify th
 
 # Installing
 
-With composer:
-
 Clone this repository and copy its folder to somewhere on your project.
 Im working to release this repository via composer.
 
