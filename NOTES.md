@@ -1,0 +1,7 @@
+# Notes About the Beta Version X This Version
+
+This is the v1.0 of this Reloader, but there was a Beta version before. On the Beta the approach was to listen changes and notify the browser using "etag" on a custom header. On client a XHR would polling the server till receive a flag about that change. That was a bad idea because the custom headers constantly collides with already sent headers (raising an error), the XHR polling is also bad for the performance and, finally, the JS and CSS was live applied on the page, causing a bug: DOM changes was causing page refresh. So i decided to rewrite the entire class.
+
+Now, as already said, the feature uses a totally different approach with SSE, no polling, no custom headers, etc. So, if you were using the Beta Version, please consider to migrate to this version, it will be very simple. The approach on this version is:
+
+You release an SSE service on some endpoint (Your phrwatcher.php). Then you start the reloader and points to this SSE. A JS will be dropped on the page and will connect to you Server Sent Events Endpoint. This endpoint will be watching your files and notifying the JS about that. The SSE is far better than polling, and far simpler than sockets. So, no custom server, no huge configuration, no pain.
