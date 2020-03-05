@@ -23,9 +23,9 @@ class HotReloaderDiffChecker {
    * @return void
   */
   function __construct ($options = []) {
-    $this->ROOT      = __DIR__;
-    $this->WATCH     = ["../"];
-    $this->IGNORE    = [''];
+    $this->ROOT    = $options["ROOT"];
+    $this->WATCH   = $options["WATCH"];
+    $this->IGNORE  = $options["IGNORE"];
   }
 
   /**

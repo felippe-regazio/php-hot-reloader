@@ -34,21 +34,19 @@
 
     // --------------------------------------------
 
-    $Differ = new HotReloaderDiffChecker();
-
-    $differ_cfg = [
+    $Differ = new HotReloaderDiffChecker([
         'ROOT'     => $PROJECT_ROOT,
         'WATCH'    => $WATCH,
         'IGNORE'   => $IGNORE
-    ];
+    ]);
 
-    $app_hash = $Differ->hash($differ_cfg);
+    $app_hash = $Differ->hash();
 
     // --------------------------------------------
 
     while (true) {
 
-        $current_hash = $Differ->hash($differ_cfg);
+        $current_hash = $Differ->hash();
 
         if ($app_hash != $current_hash) {
             $app_hash = $current_hash;
