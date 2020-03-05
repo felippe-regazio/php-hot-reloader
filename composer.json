@@ -3,9 +3,7 @@
     "description": "A class to add a complete live reload feature to any php project",
     "type": "library",
     "license": "MIT",
-    "require": {
-        "php": ">=5.6"
-    },
+    "require": {},
     "autoload": {
         "psr-4": {
         	"HotReloader\\": "src"
