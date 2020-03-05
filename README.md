@@ -26,6 +26,10 @@ new HotReloader\HotReloader('//localhost/your-project/phrwatcher.php');
 
 So, you must pass the address that points to your `phrwatcher.php` file as the HotReloader() function param. Is highly recommended to start the HotReloader on some front controller on your app. Also you should deactivate the reloader on production, never keep this feature running on production.
 
+# Example
+
+There is an example file on the root of this repository. The `example.php`. Open this file on your browser to see the Hot Reloader working.
+
 # Notes About the Beta Version X This Version
 
 This is the v1.0 of this Reloader, but there was a Beta version before. On the Beta the approach was to listen changes and notify the browser using "etag" on a custom header. On client a XHR would polling the server till receive a flag about that change. That was a bad idea because the custom headers constantly collides with already sent headers (raising an error), the XHR polling is also bad for the performance and, finally, the JS and CSS was live applied on the page, causing a bug: DOM changes was causing page refresh. So i decided to rewrite the entire class.
