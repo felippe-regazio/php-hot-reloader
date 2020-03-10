@@ -18,22 +18,20 @@ Clone this repository and copy its folder to somewhere on your project.
 
 # Configuring
 
-1. Copy the `phrwatcher.php` file on the repository root to somewhere on your app. This file must be available through some URL (you can change its name if you prefer), and if you visit this file you must see the message "SSE_ADDRESS_OK | PROJECT ROOT:" following your $PROJECT_ROOT (a var on the phrwatcher file) information.
+1. Copy the `phrwatcher.php` file on the repository root to somewhere on your app. This file must be available through some URL (you can change its name if you prefer), and if you visit this file you must see the message "SSE_ADDRESS_OK | PROJECT ROOT:" informing your project root. Copy this URL, you'll gonna need it. 
 
-2. Open this file and configure the $variables according to your needings. Please, read the doc strings on the vars to properly configure them. Basically you will inform your app root, files to watch and files to ignore.
+2. Open this file and configure the $variables according to your needings. Please, read the doc strings on the vars to properly configure them. Basically you will inform your app root on $PROJECT_ROOT, files to watch and files to ignore relative to the app root on $WATCH and $IGNORE.
 
-# Starting
-
-Now, lets imagine that you have configured your phrwatcher.php and its available through url on http://localhost/your-project/phrwatcher.php. Now, you must activate the reloader by calling it on your application like this:
-
-If you installed this repository using composer, you dont need the require_once below, just add the "autoloader" on your app and instantiate the class.
+3. Now, lets imagine that you have configured your `phrwatcher.php` and it is available on the URL http://localhost/your-project/phrwatcher.php (the URL that you copied on the first step). Now, you must activate the reloader by calling it on your application and pointing it to this URL like this:
 
 ```php
 require_once "/php-hot-reloader/src/HotReloader.php";
 new HotReloader\HotReloader('//localhost/your-project/phrwatcher.php');
 ```
 
-So, you must pass the address that points to your `phrwatcher.php` file as the HotReloader() function param. You dont need to add the protocol, just add "//" as URL prefix. Is highly recommended to start the HotReloader on some front controller on your app. Also you should deactivate the reloader on production, never keep this feature running on production.
+If you installed this repository using composer, you dont need the require_once, just add the "autoloader" on your app and call the reloader.
+
+So, you must pass the address that points to your `phrwatcher.php` file as the HotReloader() function param. You dont need to add the protocol, just add "//" as URL prefix. Is highly recommended to start the HotReloader on some front controller on your app. Also you should deactivate the reloader on production, never keep this feature active on production.
 
 # Example
 
