@@ -60,5 +60,6 @@
 			require_once $RELOADER_ROOT . "/src/HotReloaderSSE.php";
 		}
 	} else {
-		echo "SSE_ADDRESS_OK";
+		echo "SSE_ADDRESS_OK | PROJECT ROOT: <br/>";
+		echo "<b>" . $PROJECT_ROOT . "</b>";
 	}
