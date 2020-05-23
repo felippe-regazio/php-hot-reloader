@@ -47,7 +47,7 @@ class HotReloader {
      * @return URL {String} Url to phrwatcher.php file with params
      */
     private function getWatcherFileURL() {
-        return $this->WATCHER_FILE_URL . "?watch=true&reloader_root=" . dirname(__DIR__);
+        return $this->WATCHER_FILE_URL . "?watch=true&reloader_root=" . addslashes(dirname(__DIR__));
     }
 
     /**
