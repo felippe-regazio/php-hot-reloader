@@ -2,7 +2,7 @@
 
 This is a class that adds a live reload feature to any php project. It allows you to see your page dynamically changing while coding, without have to keep refreshing the browser on every change.
 
-This Reloader uses a SSE (server-sent events) to listen to changes and notify the browser. So, no built-in server, no custom port, no pain configuration needed. The repository is in Version 1.0, if your trying to find information about the Beta version, please read the "NOTES.md".
+This Reloader uses a SSE (server-sent events) to listen to changes and notify the browser. So, no built-in server, no custom port, no pain configuration needed.
 
 # Installing
 
