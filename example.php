@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Hot Reload Example</title>
+	<title>PHP Hot Reload Example</title>
 </head>
 <body>
 	<section class="live-example">

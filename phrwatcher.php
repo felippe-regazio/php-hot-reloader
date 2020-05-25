@@ -15,7 +15,6 @@
 	 * @link https://github.com/felippe-regazio/php-hot-reloader
 	 */
 
-
 	/**
 	 * This variable tells if the Reloader is enabled or not.
 	 * Remember to NEVER deploy or active this feature on prod.
