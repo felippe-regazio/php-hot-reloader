@@ -35,8 +35,19 @@ class HotReloaderDiffChecker {
    * @return Array
   */
   private function hashAppFiles () {
+    
     $hashes = [];
+    
     if(!empty($this->WATCH)){
+      
+      $git_mode = ( gettype($this->WATCH) === 'string' && substr($this->WATCH, 0, 4) === "git:" );
+      
+      if ($git_mode) {
+        // WATCH = git:repo/path
+        $this->ROOT = explode(':', $this->WATCH)[1];
+        $this->WATCH = $this->getGitFiles($this->ROOT);
+      }
+
       foreach($this->WATCH as $add){
         $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == strlen($this->ROOT) ? DIRECTORY_SEPARATOR : "";
         $add = $this->ROOT.$DS.$add;
@@ -52,6 +63,11 @@ class HotReloaderDiffChecker {
       }
     }
     return $hashes;
+  }
+
+  private function getGitFiles ($repo_path) {
+    $git_files = shell_exec('cd ' . $repo_path . '; git ls-files -m -o 2>&1');
+    return explode(PHP_EOL, $git_files);
   }
 
   /**

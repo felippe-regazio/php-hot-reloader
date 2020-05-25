@@ -15,7 +15,6 @@
 	 * @link https://github.com/felippe-regazio/php-hot-reloader
 	 */
 
-
 	/**
 	 * This variable tells if the Reloader is enabled or not.
 	 * Remember to NEVER deploy or active this feature on prod.
@@ -36,9 +35,7 @@
 	 * when detected some change on those references. All the
 	 * paths must be relative to $PROJECT_ROOT var.
 	 */
-	$WATCH = [
-		"."
-	];
+	$WATCH = 'git:/var/www/html/php-hot-reloader';
 
 	/**
 	 * Here goes the folders/files that you want the Reloader
