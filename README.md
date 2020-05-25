@@ -37,7 +37,7 @@ So, you must pass the address that points to your `phrwatcher.php` file as the H
 
 When working with larger projects, the diff algorithm can take some time to calc the modified files. To avoid the "input lag", you can follow this tips:
 
-1. On the `$WATCH` array of your phpwatcher.php try to keep only the necessary. If your project is huge, avoid using ".", and especify path by path, avoiding unecessary huge folders as vendors, tmp, log.
+1. On the `$WATCH` array of your phrwatcher.php try to keep only the necessary. If your project is huge, avoid using ".", and especify path by path, avoiding unecessary huge folders as vendors, tmp, log.
 
 2. The `$IGNORE` array is related only to what you are watching. If any `vendor` folder on the paths that you are watching, you must add them to your ignore list. Paths such as vendor, node_modules, sass_cache, tmp, log, keep them ignored.
 

@@ -43,7 +43,7 @@ class HotReloaderDiffChecker {
       $git_mode = ( gettype($this->WATCH) === 'string' && substr($this->WATCH, 0, 4) === "git:" );
       
       if ($git_mode) {
-        // WATCH = git:repo/path
+        // WATCH = git:repo/path in this case
         $this->ROOT = explode(':', $this->WATCH)[1];
         $this->WATCH = $this->getGitFiles($this->ROOT);
       }
@@ -65,6 +65,12 @@ class HotReloaderDiffChecker {
     return $hashes;
   }
 
+  /**
+   * Get the current git Modified and Other files on git file tree
+   * Set the git tracked files as the current phrwatcher $WATCH 
+   * @param $repo_path {String} Repository abs path
+   * @return Array
+   */
   private function getGitFiles ($repo_path) {
     $git_files = shell_exec('cd ' . $repo_path . '; git ls-files -m -o 2>&1');
     return explode(PHP_EOL, $git_files);
