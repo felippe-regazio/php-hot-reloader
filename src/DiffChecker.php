@@ -10,11 +10,11 @@ namespace HotReloader;
  * Redistributions of files must retain the above copyright notice.
  *
  * @link       https://github.com/felippe-regazio/php-hot-reloader
- * @copyright  Copyright (c) Felippe Regazio, and releated wrapped files
+ * @copyright  Copyright (c) Felippe Regazio, and related wrapped files
  * @version    1.0.0
  * @license    https://opensource.org/licenses/mit-license.php MIT License
  */
-class HotReloaderDiffChecker {
+class DiffChecker {
 
   /**
    * Simple constructor method containing the class params
@@ -32,7 +32,7 @@ class HotReloaderDiffChecker {
    * Generates a hash list of all files added to watch
    *
    * @param void
-   * @return Array
+   * @return array
   */
   private function hashAppFiles () {
     
@@ -44,12 +44,17 @@ class HotReloaderDiffChecker {
       
       if ($git_mode) {
         // WATCH = git:repo/path in this case
-        $this->ROOT = explode(':', $this->WATCH)[1];
+        // Windows paths have : characters in it (ex: c:\temp\src), so exploding ':' is a no go 
+        // $this->ROOT = explode(':', $this->WATCH)[1];
+        $this->ROOT = substr($this->WATCH, 4);
         $this->WATCH = $this->getGitFiles($this->ROOT);
       }
 
       foreach($this->WATCH as $add){
-        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == strlen($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+	    // not sure what's the use case for this, so feel free to combine
+	    // $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == strlen($this->ROOT) ? DIRECTORY_SEPARATOR : "";
+	    // problem - git:__DIR__ doesn't have a trailing slash, neither do git files start with one OR ./
+	    $DS = substr($this->ROOT,-1) != DIRECTORY_SEPARATOR && !in_array(substr($add, 0, 1), ['.', DIRECTORY_SEPARATOR]) ?  DIRECTORY_SEPARATOR : '';
         $add = $this->ROOT.$DS.$add;
         if(is_dir($add)){
           if( !$this->willBeIgnored($add) ){
@@ -69,11 +74,13 @@ class HotReloaderDiffChecker {
    * Get the current git Modified and Other files on git file tree
    * Set the git tracked files as the current phrwatcher $WATCH 
    * @param $repo_path {String} Repository abs path
-   * @return Array
+   * @return array
    */
   private function getGitFiles ($repo_path) {
-    $git_files = shell_exec('cd ' . $repo_path . '; git ls-files -m -o 2>&1');
-    return explode(PHP_EOL, $git_files);
+	// cd repo_path; and then git doesn't seem to work on windows, but -C creates a list of relative path files
+	$git_files = shell_exec('git -C "'.$repo_path.'" ls-files -m -o 2>&1');
+	// PHP_EOL returns "\r\n", but my git sends simple \n, might check for "\r\n" and replace on the fly if more common
+	return explode("\n", $git_files);
   }
 
   /**
