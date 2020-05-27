@@ -33,6 +33,22 @@ If you installed this repository using composer, you dont need the require_once,
 
 So, you must pass the address that points to your `phrwatcher.php` file as the HotReloader() function param. You dont need to add the protocol, just add "//" as URL prefix. Is highly recommended to start the HotReloader on some front controller on your app. Also you should deactivate the reloader on production, never keep this feature active on production.
 
+# Git Integration
+
+The $WATCH variable on the `phrwatcher.php` file defines the files and folders to track. So, instead of set a list of files and folder and observe them, you can Observe your repository. The Hot Reloader will use git to track the files currently being changed and watch them. This saves a lot of time and processing, since the files being tracked are updated automatically, and reserved only to the files that you are working on the moment. To track using GIT you must set your $WATCH variable like this:
+
+```php
+$WATCH = "git:your/absolute/repository/path/";
+```
+
+If your `phrfile.php` is in your project root, you can use an automatic and dynamic version:
+
+```php
+$WATCH = "git:" . __DIR__;
+```
+
+Now the Hot Reloader will automatically observe the files using your Git Status.
+
 # Tips
 
 When working with larger projects, the diff algorithm can take some time to calc the modified files. To avoid the "input lag", you can follow this tips:
