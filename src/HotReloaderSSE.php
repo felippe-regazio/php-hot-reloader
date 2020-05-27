@@ -42,7 +42,7 @@
 
     // --------------------------------------------
 
-    $Differ = new HotReloaderDiffChecker([
+    $Differ = new DiffChecker([
         'ROOT'     => $PROJECT_ROOT,
         'WATCH'    => $WATCH,
         'IGNORE'   => $IGNORE
