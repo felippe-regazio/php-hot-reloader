@@ -10,7 +10,7 @@ namespace HotReloader;
  * Redistributions of files must retain the above copyright notice.
  *
  * @link       https://github.com/felippe-regazio/php-hot-reloader
- * @copyright  Copyright (c) Felippe Regazio, and releated wrapped files
+ * @copyright  Copyright (c) Felippe Regazio, and related wrapped files
  * @version    1.0.0
  * @license    https://opensource.org/licenses/mit-license.php MIT License
  */
@@ -32,7 +32,7 @@ class DiffChecker {
    * Generates a hash list of all files added to watch
    *
    * @param void
-   * @return Array
+   * @return array
   */
   private function hashAppFiles () {
     
@@ -69,7 +69,7 @@ class DiffChecker {
    * Get the current git Modified and Other files on git file tree
    * Set the git tracked files as the current phrwatcher $WATCH 
    * @param $repo_path {String} Repository abs path
-   * @return Array
+   * @return array
    */
   private function getGitFiles ($repo_path) {
     $git_files = shell_exec('cd ' . $repo_path . '; git ls-files -m -o 2>&1');
@@ -83,7 +83,7 @@ class DiffChecker {
    * directory, than transform this array in a unique md5 checksum
    *
    * @param $directory {String} Directory path
-   * @return String
+   * @return string
   */
   private function hashDir ($directory) {
     if (! is_dir($directory)) return false;
@@ -111,7 +111,7 @@ class DiffChecker {
    * The given paths are always converted to be relative to the Root
    *
    * @param $file {String} File path
-   * @return Boolean
+   * @return boolean
   */
   private function willBeIgnored ($file) {
     if( !empty(array_filter($this->IGNORE)) ){
@@ -131,7 +131,7 @@ class DiffChecker {
    * a unique md5 hash. this unique hash is your app state fingerprint.
    *
    * @param void
-   * @return String
+   * @return string
    */
   private function getAppStateHash () {
     $hashes = $this->hashAppFiles();
