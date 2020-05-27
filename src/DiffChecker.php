@@ -23,9 +23,19 @@ class DiffChecker {
    * @return void
   */
   function __construct ($options = []) {
-    $this->ROOT    = $options["ROOT"];
+    $this->ROOT    = $this->addSlash($options["ROOT"]);
     $this->WATCH   = $options["WATCH"];
     $this->IGNORE  = $options["IGNORE"];
+  }
+
+  /**
+   * Receives a path like 'my/path/xyz' and returns it with
+   * a trailling slash in case it doesnt exists
+   * @param $path {String}
+   * @return string
+   */
+  private function addSlash ($str) {
+    return $str .= ( substr($str, -1) == DIRECTORY_SEPARATOR ? '' : DIRECTORY_SEPARATOR );
   }
 
   /**
@@ -44,13 +54,12 @@ class DiffChecker {
       
       if ($git_mode) {
         // WATCH = git:repo/path in this case
-        $this->ROOT = explode(':', $this->WATCH)[1];
+        $this->ROOT = substr($this->WATCH, 4);
         $this->WATCH = $this->getGitFiles($this->ROOT);
       }
 
       foreach($this->WATCH as $add){
-        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == strlen($this->ROOT) ? DIRECTORY_SEPARATOR : "";
-        $add = $this->ROOT.$DS.$add;
+        $add = $this->ROOT . $add;
         if(is_dir($add)){
           if( !$this->willBeIgnored($add) ){
             $hashes[] = $this->hashDir($add);
@@ -116,8 +125,7 @@ class DiffChecker {
   private function willBeIgnored ($file) {
     if( !empty(array_filter($this->IGNORE)) ){
       foreach( $this->IGNORE as $ignore ){
-        $DS = !strpos($this->ROOT, DIRECTORY_SEPARATOR) == strlen($this->ROOT) ? DIRECTORY_SEPARATOR : "";
-        $ignore = $this->ROOT.$DS.$ignore;
+        $ignore = $this->ROOT . $ignore;
         if($file == $ignore || strpos(dirname($file),$ignore) !== false && strpos(dirname($file),$ignore) == 0){
           return true;
         }
