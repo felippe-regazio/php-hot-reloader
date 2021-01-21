@@ -23,6 +23,12 @@
 
 
 	/**
+	 * For additional security, input your IP address to allow this script
+	 */
+	if ( ! in_array( $_SERVER['REMOTE_ADDR'], ['localhost', '127.0.0.1', '::1', '123.123.123.123'] ) ) 
+		exit( "Your IP is not allowed" );
+
+	/**
 	 * This variable must contain your project root absolute
 	 * path with a trailing slash. The Watch and Ignore paths
 	 * will be relative to this one.
