@@ -23,10 +23,10 @@
 
 
 	/**
-	 * For additional security, input your IP address to allow this script
+	 * For additional security, input your development site address, to recognize in case of accidental migration into production
 	 */
-	if ( ! in_array( $_SERVER['REMOTE_ADDR'], ['localhost', '127.0.0.1', '::1', '123.123.123.123'] ) ) 
-		exit( "Your IP is not allowed" );
+	if ( ! in_array( $_SERVER['HTTP_HOST'], ['localhost', '127.0.0.1', '::1', 'test.example.com'] ) ) 
+		exit( "{$_SERVER['HTTP_HOST']} does not seem your development server" );
 
 	/**
 	 * This variable must contain your project root absolute
