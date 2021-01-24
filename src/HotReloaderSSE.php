@@ -18,6 +18,23 @@
      * @license    https://opensource.org/licenses/mit-license.php MIT License
      */
 
+	
+	// Check if it was enabled
+	if (!$ENABLED){
+		exit("Not Enabled");	
+	}
+	// Check if host is allowed
+	if ( ! in_array( $_SERVER['HTTP_HOST'], $ENABLED_HOSTS ) ) 
+		exit( sprintf("%s does not seem your development server", $_SERVER['HTTP_HOST']) );
+		
+	if ( empty(@$_REQUEST['watch']) ) {
+		echo "SSE_ADDRESS_OK | PROJECT ROOT: <br/>";
+		echo "<b>" . $PROJECT_ROOT . "</b>";
+		exit;
+	}
+
+	// Start script
+	
     ob_end_clean();
     set_time_limit(0);
 
@@ -30,6 +47,7 @@
     header('Content-Type: text/event-stream');
     header('Access-Control-Allow-Methods: GET');
     header('Access-Control-Expose-Headers: X-Events');
+
 
 	function send_message ($message) {
         echo "data: " . json_encode($message) . PHP_EOL;
