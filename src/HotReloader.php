@@ -37,15 +37,20 @@ class HotReloader {
      * @return void
      */
     public function init () {
-		// check if session existed already, not to re-start
-		if( session_status() == PHP_SESSION_NONE ){
-			$this->initiated=true;
-			session_start();
-		}
-		
+		 
 		register_shutdown_function( function(){ 
 			$this->addJSClient();
 		});
+		
+		// if project-dir was set, then user expressed the wish to use the "auto-detected" files list
+		if ( !empty ( $this->PROJECT_DIR ) )
+		{
+			// check if session existed already, not to re-start
+			if( session_status() == PHP_SESSION_NONE ){
+				$this->initiated=true;
+				session_start();
+			}
+		}
     }
 
     /**
