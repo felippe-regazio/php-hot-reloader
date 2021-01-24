@@ -62,6 +62,4 @@
 
 	// ---------------------- Dont Edit It ----------------------
 
-	$RELOADER_ROOT = @$_REQUEST["reloader_root"];
-	
-	require_once $RELOADER_ROOT . "/src/HotReloaderSSE.php"; 
+	require_once @$_REQUEST["reloader_root"] . "/src/HotReloaderSSE.php"; 
