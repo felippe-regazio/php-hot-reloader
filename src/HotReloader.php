@@ -23,8 +23,9 @@ class HotReloader {
      * @param $PHR_WATCHR {String} Url to the phrwatcher.php file
      * @return void
      */
-    function __construct ($WATCHER_FILE_URL) {
+    function __construct ($WATCHER_FILE_URL, $PROJECT_DIR='') {
         $this->WATCHER_FILE_URL = $WATCHER_FILE_URL;
+        $this->PROJECT_DIR      = $this->standartize_path( realpath( $PROJECT_DIR ) );
         $this->init();
     }
 
@@ -36,9 +37,67 @@ class HotReloader {
      * @return void
      */
     public function init () {
-        $this->addJSClient();
+		// check if session existed already, not to re-start
+		if( session_status() == PHP_SESSION_NONE ){
+			$this->initiated=true;
+			session_start();
+		}
+		
+		register_shutdown_function( function(){ 
+			$this->addJSClient();
+		});
     }
 
+    /**
+     * Get included files list for this current execution/page.
+	 * However, be noted, that in rare cases, the files list might be large (i.e. Wordpress or other CMS)
+	 * and each file-path might be long, then the query might become large and fail
+	 * with many web-server solutions (i.e. over Apache's default 8177 char-limit or Nginx defaults).
+	 * So, to avoid such occasion, we store the information into "session".
+     *
+     * @param void
+     * @return FilesList {String} Query for inluded files list
+     */
+    private function includedFilesQuery( ) {
+		// if project_dir was empty, we shouldn't continue.
+		if ( empty ( $this->PROJECT_DIR ) )
+			return '';
+		
+		$included_files = get_included_files();
+		$included_files = array_map( function($filePath) {
+			$standartized_path = $this->standartize_path( $filePath ); 
+			// We only looking for the files which are inside the project_dir (removing the pre-path)
+			if ( stripos( $filePath, $this->PROJECT_DIR) !== false ){
+				$relative_path = '.' . substr($standartized_path, strlen($this->PROJECT_DIR) );
+				return $relative_path; 
+			}
+			else {
+				return null;
+			}
+		}, $included_files );
+		$included_files = array_filter( $included_files ); //remove empty entries
+		$final_string = urlencode ( $this->standartize_path( implode( ',', $included_files ) ) );
+		
+		$this->random_session_id = rand(1,9999999999) ."_". rand(1, 9999999999);
+		$_SESSION[ $this->random_session_id ] = $final_string;
+		// if we started session, then end it
+		if ( isset ( $this->initiated ) ) {
+			session_write_close();
+		}
+		return "&fileslist=" . $this->random_session_id;
+    }
+	
+	/**
+	 * Correct the path completely into native OS path. 
+	 * (Sometimes needed when using Windows/Linux modules together).
+	 */
+	private function standartize_path( $path ){
+		return str_replace( ['/','\\'], DIRECTORY_SEPARATOR, $path );
+	}
+	
+ 
+	
+	
     /**
      * Builds the watcher file url (phrwatcher.php by the docs), and
      * add the proper parameters as GET query strings
@@ -47,7 +106,7 @@ class HotReloader {
      * @return URL {String} Url to phrwatcher.php file with params
      */
     private function getWatcherFileURL() {
-        return $this->WATCHER_FILE_URL . "?watch=true&reloader_root=" . addslashes(dirname(__DIR__));
+        return $this->WATCHER_FILE_URL . "?watch=true&reloader_root=" . addslashes(dirname(__DIR__)) . $this->includedFilesQuery();
     }
 
     /**
@@ -62,7 +121,7 @@ class HotReloader {
             <script>
                 (function () {
 
-                    const EVENT_SOURCE_ENDPOINT = '<?=$this->getWatcherFileURL()?>';
+                    const EVENT_SOURCE_ENDPOINT = '<?php echo $this->getWatcherFileURL(); ?>';
                     const ServerEvents = new EventSource(EVENT_SOURCE_ENDPOINT);
 
                     ServerEvents.addEventListener('message', e => {
