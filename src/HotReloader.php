@@ -69,6 +69,12 @@ class HotReloader {
 			return '';
 		
 		$included_files = get_included_files();
+		// if fatal/other error stops page execution, then include that file too (as those files are not included in "get_included_files")
+		$last_error = error_get_last();
+		if ( ! empty( $last_error ) && ! empty( $last_error['file'] ) ){
+			$included_files[] = $last_error['file'];
+		}
+		
 		$included_files = array_map( function($filePath) {
 			$standartized_path = $this->standartize_path( $filePath ); 
 			// We only looking for the files which are inside the project_dir (removing the pre-path)
