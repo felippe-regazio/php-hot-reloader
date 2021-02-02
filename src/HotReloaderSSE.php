@@ -18,19 +18,19 @@
      * @license    https://opensource.org/licenses/mit-license.php MIT License
      */
 
-	
-	// Check if it was enabled
-	if (!$ENABLED){
+	if (!$ENABLED) {
 		exit("Not Enabled");	
 	}
-	// Check if host is allowed
-	if ( ! in_array( $_SERVER['HTTP_HOST'], $ENABLED_HOSTS ) ) 
-		exit( sprintf("%s does not seem your development server", $_SERVER['HTTP_HOST']) );
+
+	if (!in_array($_SERVER['HTTP_HOST'], $ENABLED_HOSTS )) {
+		exit(sprintf("%s does not seem to be your development server", $_SERVER['HTTP_HOST']));
+    }
 		
-	if ( empty(@$_REQUEST['watch']) ) {
+	if (empty(@$_REQUEST['watch'])) {
 		echo "SSE_ADDRESS_OK | PROJECT ROOT: <br/>";
-		echo "<b>" . $PROJECT_ROOT . "</b>";
-		exit;
+        echo "<b>" . $PROJECT_ROOT . "</b>";
+        
+		exit(0);
 	}
 
 	// Start script

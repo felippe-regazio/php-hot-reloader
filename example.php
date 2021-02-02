@@ -5,8 +5,8 @@
 </head>
 <body>
 	<section class="live-example">
-		<p>With this page opened in a browser, <br/>change anything on its source content.</p>
-		<b>Last load: <?php echo date("H:i:s");?></b>
+		<p><strong>With this page opened in a browser, <br/>change anything on its source content.</strong></p>
+		<p>Last load: <?php echo date("H:i:s");?></p>
 	</section>
 </body>
 	<?php

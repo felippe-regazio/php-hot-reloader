@@ -23,13 +23,14 @@
 
 
 	/**
-	 * For additional security, input your development site address, to recognize in case of accidental migration into production
+	 * For additional security, input your development site address 
+	 * to recognize in case of accidental migration into production.
+	 * By default, only locahost is enabled to run this script.
 	 */
 	$ENABLED_HOSTS = [
-		'localhost', 		// localhost
-		'127.0.0.1', 		// localhost alternative
-		'::1', 				// localhost alternative
-		'test.example.com'	// your specific test domain
+		'::1',
+		'localhost',
+		'127.0.0.1',
 	];
 
 	/**
