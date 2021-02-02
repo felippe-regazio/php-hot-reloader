@@ -23,6 +23,16 @@
 
 
 	/**
+	 * For additional security, input your development site address, to recognize in case of accidental migration into production
+	 */
+	$ENABLED_HOSTS = [
+		'localhost', 		// localhost
+		'127.0.0.1', 		// localhost alternative
+		'::1', 				// localhost alternative
+		'test.example.com'	// your specific test domain
+	];
+
+	/**
 	 * This variable must contain your project root absolute
 	 * path with a trailing slash. The Watch and Ignore paths
 	 * will be relative to this one.
@@ -52,13 +62,4 @@
 
 	// ---------------------- Dont Edit It ----------------------
 
-	$RELOADER_ROOT = @$_REQUEST["reloader_root"];
-
-	if (!empty(@$_REQUEST['watch'])) {
-		if ($ENABLED) {
-			require_once $RELOADER_ROOT . "/src/HotReloaderSSE.php";
-		}
-	} else {
-		echo "SSE_ADDRESS_OK | PROJECT ROOT: <br/>";
-		echo "<b>" . $PROJECT_ROOT . "</b>";
-	}
+	require_once @$_REQUEST["reloader_root"] . "/src/HotReloaderSSE.php"; 
