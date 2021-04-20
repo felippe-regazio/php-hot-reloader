@@ -1,5 +1,7 @@
 # PHP Hot Reloader
 
+[UNMAINTAINED]: This repository is currently unmaintained, I've been very busy in the last months and im struggling to find some time to take care of this repo but with no success. I'm sorry for those who are using it. If you want to maintain this repo, please open an issue and let me know.
+
 This is a class that adds a live reload feature to any php project. It allows you to see your page dynamically changing while coding, without have to keep refreshing the browser on every change.
 
 This Reloader uses a SSE (server-sent events) to listen to changes and notify the browser. So, no built-in server, no custom port, no pain configuration needed.
