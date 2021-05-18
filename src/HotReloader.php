@@ -93,7 +93,7 @@ class HotReloader {
 		$_SESSION[ $this->random_session_id ] = $final_string;
 		// if we started session, then end it
 		if ( isset ( $this->initiated ) ) {
-			session_write_close();
+			session_destroy();
 		}
 		return "&fileslist=" . $this->random_session_id;
     }
