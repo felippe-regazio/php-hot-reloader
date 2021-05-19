@@ -33,6 +33,14 @@
 		exit(0);
 	}
 
+	// Auto-resolve the WATCH list.
+	if ( empty($WATCH) && isset($_REQUEST['fileslist']) )
+	{
+		$files_list = session_get_value($_REQUEST['fileslist']);
+		$list_of_files = explode(',', urldecode( $files_list) );
+		$WATCH = $list_of_files;
+	}
+
 	// Start script
 	
     ob_end_clean();
@@ -48,7 +56,21 @@
     header('Access-Control-Allow-Methods: GET');
     header('Access-Control-Expose-Headers: X-Events');
 
-
+	function session_get_value( $name ){
+		// check if session existed already, not to re-start
+		if( session_status() == PHP_SESSION_NONE ){
+			$initiated=true;
+			session_start();
+		}
+		
+		$value = $_SESSION[ $name ];
+		// if we started session, then end it
+		if ( isset ( $initiated ) ) {
+			session_write_close();
+		}
+		return $value;
+	}
+	
 	function send_message ($message) {
         echo "data: " . json_encode($message) . PHP_EOL;
         echo PHP_EOL;

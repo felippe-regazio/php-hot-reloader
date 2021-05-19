@@ -45,9 +45,16 @@
 	 * that you want to watch. The application will be reloaded
 	 * when detected some change on those references. All the
 	 * paths must be relative to $PROJECT_ROOT var.
+	 *
+	 * Note:
+	 *  1) if you want to watch specific files, then list them in the array
+	 *  2) if you want to watch the whole root, input the "."
+	 *  3) if you want to watch only the related files to the page you have opened in the 
+	 *        browser, set the array empty. This is the best approach in most cases. However, 
+	 *        if you will experience some glitches (if you app is complex), then use 2nd approach.
 	 */
 	$WATCH = [
-		"."
+		
 	];
 
 	/**
